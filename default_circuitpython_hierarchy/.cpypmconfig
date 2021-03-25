@@ -6,8 +6,5 @@
 	"files_to_sync": [
 	    "lib",
         "code.py"
-	],
-	"files_to_exclude": [
-
 	]
 }

@@ -90,7 +90,6 @@ def sync_project(cpypm_config_path: Path) -> None:
     """
     cpypm_config = load_json_string(cpypm_config_path.read_text())
     to_sync = [Path(p) for p in cpypm_config["files_to_sync"]]
-    to_exclude = [Path(p) for p in cpypm_config["files_to_exclude"]]
     project_root_path = Path(cpypm_config["project_root"])
     sync_location_path = cpypm_config["sync_location"]
     if sync_location_path is None:
@@ -98,15 +97,16 @@ def sync_project(cpypm_config_path: Path) -> None:
     else:
         sync_location_path = Path(sync_location_path).absolute().resolve()
     logger.info(f"Found {len(to_sync)} items to sync!")
-    logger.debug(f"({len(to_exclude)} items to exclude)")
     logger.debug(f"Sync location is {repr(sync_location_path)}")
     logger.debug(f"Project root path is {repr(project_root_path)}")
     for path in to_sync:
-        path_relative = (project_root_path / path).relative_to(project_root_path)
-        new_path = sync_location_path / path_relative
-        if path in to_exclude:
-            logger.debug(f"Not syncing {repr(path)} to {repr(new_path)} as it is in exclusion list")
-            continue
+        new_path = sync_location_path / path
+        path = (project_root_path / path)
         logger.debug(f"Syncing {repr(path)} to {repr(new_path)}")
-        # TODO: Copy contents of path to new_path - if file just copy contents if directory copy contents
-        #  (don't forget to check exclusions)
+        if path.is_file():
+            new_path.write_bytes(path.read_bytes())
+        else:
+            if new_path.exists():
+                shutil.rmtree(new_path, ignore_errors=True)
+            new_path.mkdir(parents=True, exist_ok=True)
+            shutil.copytree(path, new_path)
