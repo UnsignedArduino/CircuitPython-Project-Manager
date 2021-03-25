@@ -1,6 +1,6 @@
 {
 	"project name": {project_name},
-	"description": "",
+	"description": {description},
 	"project root": {project_root},
 	"sync location": {sync_location},
 	"files to sync": [
