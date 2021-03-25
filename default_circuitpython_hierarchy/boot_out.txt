@@ -1,3 +1,5 @@
 Normally this would say something like this:
 Adafruit CircuitPython 6.0.1 on 2020-12-28; Adafruit PyGamer with samd51j19
 But since this is a CircuitPython project on a computer, this doesn't get synced.
+Nor does .fseventsd/* and .metadata_never_index and .Trashes
+It's just to make you feel at home :)
