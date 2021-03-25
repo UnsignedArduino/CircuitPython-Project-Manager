@@ -15,6 +15,7 @@ Functions list:
 - make_new_project(parent_directory: Path, project_name: str = "Untitled", project_description: str = "",
                    autogen_gitignore: bool = True,
                    dfl_cpy_hierarchy: Path = (Path.cwd() / "default_circuitpython_hierarchy")) -> None
+- sync_project(cpypm_config_path: Path) -> None
 
 """
 
