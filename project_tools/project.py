@@ -1,5 +1,5 @@
 """
-This module handles making a new CircuitPython project.
+This module handles CircuitPython projects.
 
 -----------
 
