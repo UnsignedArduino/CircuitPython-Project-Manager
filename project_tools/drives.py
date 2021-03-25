@@ -17,8 +17,8 @@ Functions list:
 
 from pathlib import Path
 from string import ascii_uppercase
-from bundle_tools import os_detect
-from bundle_tools.create_logger import create_logger
+from project_tools import os_detect
+from project_tools.create_logger import create_logger
 import logging
 
 logger = create_logger(name=__name__, level=logging.DEBUG)
