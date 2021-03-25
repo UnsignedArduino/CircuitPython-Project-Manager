@@ -12,14 +12,16 @@ No classes!
 Functions list:
 
 - replace_sus_chars(file_name: str) -> str
-- make_new_project(parent_directory: Path, project_name: str = "Untitled", autogen_gitignore: bool = True,
-                   fl_cpy_hierarchy: Path = (Path.cwd() / "default_circuitpython_hierarchy")) -> None
+- make_new_project(parent_directory: Path, project_name: str = "Untitled", project_description: str = "",
+                   autogen_gitignore: bool = True,
+                   dfl_cpy_hierarchy: Path = (Path.cwd() / "default_circuitpython_hierarchy")) -> None
 
 """
 
 from pathlib import Path
 import shutil
 import re
+from json import loads as load_json_string, dumps as dump_json_string
 from project_tools.create_logger import create_logger
 import logging
 
@@ -36,13 +38,15 @@ def replace_sus_chars(file_name: str) -> str:
     return re.sub("[^\w\-_. ]", "_", file_name)
 
 
-def make_new_project(parent_directory: Path, project_name: str = "Untitled", autogen_gitignore: bool = True,
+def make_new_project(parent_directory: Path, project_name: str = "Untitled", project_description: str = "",
+                     autogen_gitignore: bool = True,
                      dfl_cpy_hierarchy: Path = (Path.cwd() / "default_circuitpython_hierarchy")) -> None:
     """
     Make a new CircuitPython project.
 
     :param parent_directory: A pathlib.Path - where to put the project.
     :param project_name: A str - what to call the project - defaults to "Untitled"
+    :param project_description: A str - a description of the project - defaults to ""
     :param autogen_gitignore: A bool - whether to auto-generate a .gitignore for the project - defaults to True.
     :param dfl_cpy_hierarchy: A pathlib.Path - where we copy the base project files from - defaults to
      Path.cwd() / "default_circuitpython_hierarchy"
@@ -54,3 +58,11 @@ def make_new_project(parent_directory: Path, project_name: str = "Untitled", aut
     new_path = parent_directory / replace_sus_chars(project_name)
     logger.debug(f"Renaming {repr(project_path)} to {repr(new_path)}")
     project_path.rename(new_path)
+    cpypm_path = new_path / ".cpypmconfig"
+    logger.debug(f"Path to .cpypmconfig is {repr(cpypm_path)}")
+    cpypm_config = load_json_string(cpypm_path.read_text())
+    cpypm_config["project_name"] = project_name
+    cpypm_config["description"] = project_description
+    cpypm_config["project_root"] = str(new_path)
+    cpypm_path.write_text(dump_json_string(cpypm_config, indent=4))
+    logger.debug(f"Filled .cpypmconfig")

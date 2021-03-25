@@ -1,9 +1,9 @@
 {
-	"project name": {project_name},
-	"description": {description},
-	"project root": {project_root},
-	"sync location": {sync_location},
-	"files to sync": [
+	"project_name": null,
+	"description": null,
+	"project_root": null,
+	"sync_location": null,
+	"files_to_sync": [
         "lib/*",
         "code.py"
 	]
