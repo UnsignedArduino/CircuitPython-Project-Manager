@@ -25,4 +25,3 @@ log_path = Path.cwd() / "log.log"
 log_path.write_text("")
 
 logger = create_logger(name=__name__, level=LEVEL)
-
