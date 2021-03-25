@@ -1,8 +1,8 @@
 {
 	"project name": {project_name},
-	"description": null,
+	"description": "",
 	"project root": {project_root},
-	"sync location": null,
+	"sync location": {sync_location},
 	"files to sync": [
         "lib/*",
         "code.py"
