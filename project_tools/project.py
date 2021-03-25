@@ -102,10 +102,11 @@ def sync_project(cpypm_config_path: Path) -> None:
     logger.debug(f"Sync location is {repr(sync_location_path)}")
     logger.debug(f"Project root path is {repr(project_root_path)}")
     for path in to_sync:
-        path = project_root_path / path
-        path_relative = path.relative_to(project_root_path)
+        path_relative = (project_root_path / path).relative_to(project_root_path)
         new_path = sync_location_path / path_relative
-        if path_relative in to_exclude:
+        if path in to_exclude:
             logger.debug(f"Not syncing {repr(path)} to {repr(new_path)} as it is in exclusion list")
             continue
         logger.debug(f"Syncing {repr(path)} to {repr(new_path)}")
+        # TODO: Copy contents of path to new_path - if file just copy contents if directory copy contents
+        #  (don't forget to check exclusions)
