@@ -66,3 +66,14 @@ def make_new_project(parent_directory: Path, project_name: str = "Untitled", pro
     cpypm_config["project_root"] = str(new_path)
     cpypm_path.write_text(dump_json_string(cpypm_config, indent=4))
     logger.debug(f"Filled .cpypmconfig")
+    if autogen_gitignore:
+        logger.debug("Auto-generating .gitignore")
+        gitignore_path = new_path / ".gitignore"
+        logger.debug(f"Path to .gitignore is {repr(gitignore_path)}")
+        gitignore = ""
+        gitignore += ".fseventsd/*\n"
+        gitignore += ".metadata_never_index\n"
+        gitignore += ".Trashes\n"
+        gitignore += "boot_out.txt\n"
+        gitignore_path.write_text(gitignore)
+        logger.debug(f"Wrote .gitignore")
