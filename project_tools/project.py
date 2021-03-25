@@ -77,3 +77,35 @@ def make_new_project(parent_directory: Path, project_name: str = "Untitled", pro
         gitignore += "boot_out.txt\n"
         gitignore_path.write_text(gitignore)
         logger.debug(f"Wrote .gitignore")
+    logger.info(f"Made new project at {repr(new_path)}")
+
+
+def sync_project(cpypm_config_path: Path) -> None:
+    """
+    Sync a project to the CircuitPython device.
+
+    :param cpypm_config_path: A pathlib.Path - the path to the .cpypmconfig file.
+    :raise ValueError: Raises ValueError if the sync location of the file hasn't been set.
+    :return: None.
+    """
+    cpypm_config = load_json_string(cpypm_config_path.read_text())
+    to_sync = [Path(p) for p in cpypm_config["files_to_sync"]]
+    to_exclude = [Path(p) for p in cpypm_config["files_to_exclude"]]
+    project_root_path = Path(cpypm_config["project_root"])
+    sync_location_path = cpypm_config["sync_location"]
+    if sync_location_path is None:
+        raise ValueError("sync_location has not been filled out!")
+    else:
+        sync_location_path = Path(sync_location_path).absolute().resolve()
+    logger.info(f"Found {len(to_sync)} items to sync!")
+    logger.debug(f"({len(to_exclude)} items to exclude)")
+    logger.debug(f"Sync location is {repr(sync_location_path)}")
+    logger.debug(f"Project root path is {repr(project_root_path)}")
+    for path in to_sync:
+        path = project_root_path / path
+        path_relative = path.relative_to(project_root_path)
+        new_path = sync_location_path / path_relative
+        if path_relative in to_exclude:
+            logger.debug(f"Not syncing {repr(path)} to {repr(new_path)} as it is in exclusion list")
+            continue
+        logger.debug(f"Syncing {repr(path)} to {repr(new_path)}")
