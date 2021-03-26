@@ -15,9 +15,9 @@ class TooltipBase(object):
     def __init__(self, anchor_widget):
         """Create a tooltip.
 
-        anchor_widget: the widget next to which the tooltip will be shown
+        anchor_widget: the frame next to which the tooltip will be shown
 
-        Note that a widget will only be shown when showtip() is called.
+        Note that a frame will only be shown when showtip() is called.
         """
         self.anchor_widget = anchor_widget
         self.tipwindow = None
@@ -55,7 +55,7 @@ class TooltipBase(object):
 
     def get_position(self):
         """choose a screen position for the tooltip"""
-        # The tip window must be completely outside the anchor widget;
+        # The tip window must be completely outside the anchor frame;
         # otherwise when the mouse enters the tip window we get
         # a leave event and it disappears, and then we get an enter
         # event and it reappears, and so on forever :-(
@@ -87,11 +87,11 @@ class OnHoverTooltipBase(TooltipBase):
     def __init__(self, anchor_widget, hover_delay=1000):
         """Create a tooltip with a mouse hover delay.
 
-        anchor_widget: the widget next to which the tooltip will be shown
+        anchor_widget: the frame next to which the tooltip will be shown
         hover_delay: time to delay before showing the tooltip, in milliseconds
 
-        Note that a widget will only be shown when showtip() is called,
-        e.g. after hovering over the anchor widget with the mouse for enough
+        Note that a frame will only be shown when showtip() is called,
+        e.g. after hovering over the anchor frame with the mouse for enough
         time.
         """
         super(OnHoverTooltipBase, self).__init__(anchor_widget)
@@ -145,15 +145,15 @@ class OnHoverTooltipBase(TooltipBase):
 
 
 class Hovertip(OnHoverTooltipBase):
-    "A tooltip that pops up when a mouse hovers over an anchor widget."
+    "A tooltip that pops up when a mouse hovers over an anchor frame."
     def __init__(self, anchor_widget, text, hover_delay=1000):
         """Create a text tooltip with a mouse hover delay.
 
-        anchor_widget: the widget next to which the tooltip will be shown
+        anchor_widget: the frame next to which the tooltip will be shown
         hover_delay: time to delay before showing the tooltip, in milliseconds
 
-        Note that a widget will only be shown when showtip() is called,
-        e.g. after hovering over the anchor widget with the mouse for enough
+        Note that a frame will only be shown when showtip() is called,
+        e.g. after hovering over the anchor frame with the mouse for enough
         time.
         """
         super(Hovertip, self).__init__(anchor_widget, hover_delay=hover_delay)

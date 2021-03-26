@@ -5,7 +5,7 @@ A text box with a right click!
 
 Classes list:
 
-- ComboboxWithRightClick(ttk.Combobox).__init__(self, master, *args, **kwargs):
+- TextWithRightClick(tk.Text).__init__(self, master, *args, **kwargs):
 
 -----------
 
@@ -46,10 +46,13 @@ class TextWithRightClick(tk.Text):
         except TypeError:
             pass
         finally:
-            try:
-                self.right_click_menu.tk_popup(event.x_root, event.y_root, 0)
-            finally:
-                self.right_click_menu.grab_release()
+            if str(self["state"]) == "normal":
+                try:
+                    self.right_click_menu.tk_popup(event.x_root, event.y_root, 0)
+                finally:
+                    self.right_click_menu.grab_release()
+            else:
+                logger.info(f"Not showing context menu, widget is currently disabled!")
 
     def initiate_right_click_menu(self, disable: list = [], callback: Callable = None):
         """

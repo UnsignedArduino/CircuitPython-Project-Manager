@@ -202,7 +202,7 @@ class GUI(tk.Tk):
 
         :return: None.
         """
-        self.project_location_frame = ttk.Frame(master=self.new_project_window)
+        self.project_location_frame = ttk.Frame(master=self.new_project_frame)
         self.project_location_frame.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
         self.project_location_label = ttk.Label(master=self.project_location_frame, text="Project location: ")
         self.project_location_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
@@ -221,7 +221,7 @@ class GUI(tk.Tk):
 
         :return: None.
         """
-        self.project_details_frame = ttk.Frame(master=self.new_project_window)
+        self.project_details_frame = ttk.Frame(master=self.new_project_frame)
         self.project_details_frame.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
         self.project_title_label = ttk.Label(master=self.project_details_frame, text="Project title: ")
         self.project_title_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
@@ -241,15 +241,44 @@ class GUI(tk.Tk):
 
         :return: None.
         """
-        self.project_buttons_frame = ttk.Frame(master=self.new_project_window)
+        self.project_buttons_frame = ttk.Frame(master=self.new_project_frame)
         self.project_buttons_frame.grid(row=2, column=0, padx=1, pady=1, sticky=tk.N)
-        self.make_new_project_button = ttk.Button(master=self.project_buttons_frame, text="Make new project")
+        self.make_new_project_button = ttk.Button(master=self.project_buttons_frame, text="Make new project",
+                                                  command=self.start_create_new_project_thread)
         self.make_new_project_button.grid(row=0, column=0, padx=1, pady=1, sticky=tk.N)
         self.cancel_new_project_button = ttk.Button(master=self.project_buttons_frame, text="Cancel",
                                                     command=lambda: self.dismiss_dialog(self.new_project_window))
         self.cancel_new_project_button.grid(row=0, column=1, padx=1, pady=1, sticky=tk.N)
 
-    def create_new_project(self) -> None:
+    def set_childrens_state(self, frame, enabled: bool = True) -> None:
+        """
+        Set the state of a frame's children.
+
+        :param frame: A Tkinter widget to iterate over's it's children.
+        :param enabled: Weather to enable/disable the children.
+        :return: None.
+        """
+        logger.debug(f"{'Enabling' if enabled else 'Disabling'} {repr(frame)}")
+        for child in frame.winfo_children():
+            try:
+                child.configure(state=tk.NORMAL if enabled else tk.DISABLED)
+            except tk.TclError:
+                try:
+                    self.set_childrens_state(frame=child, enabled=enabled)
+                except tk.TclError:
+                    pass
+
+    def start_create_new_project_thread(self) -> None:
+        """
+        Start the create new project thread.
+
+        :return: None.
+        """
+        self.set_childrens_state(self.new_project_frame, False)
+        # TODO: Disable closing dialog
+        # TODO: Make new project
+
+    def open_create_new_project(self) -> None:
         """
         Create a new project. This will open a new window.
 
@@ -257,10 +286,12 @@ class GUI(tk.Tk):
         """
         logger.debug("Creating new project...")
         self.new_project_window = self.create_dialog(title="CircuitPython Project Manager: Make a new project...")
+        self.new_project_frame = ttk.Frame(master=self.new_project_window)
+        self.new_project_frame.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
         self.create_new_project_location()
         self.create_new_project_details()
         self.create_new_project_buttons()
-        self.new_project_window.wait_window()
+        self.new_project_frame.wait_window()
 
     def create_file_menu(self) -> None:
         """
@@ -270,7 +301,7 @@ class GUI(tk.Tk):
         """
         self.file_menu = tk.Menu(self.menu_bar)
         self.menu_bar.add_cascade(menu=self.file_menu, label="File")
-        self.file_menu.add_command(label="New...", command=self.create_new_project)
+        self.file_menu.add_command(label="New...", command=self.open_create_new_project)
         self.file_menu.add_command(label="Open...", command=self.open_project)
         self.file_menu.add_command(label="Close project", command=self.close_project)
         self.file_menu.add_separator()
