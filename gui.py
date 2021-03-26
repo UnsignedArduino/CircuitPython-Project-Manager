@@ -134,8 +134,41 @@ class GUI(tk.Tk):
         self.menu_bar.add_cascade(menu=self.file_menu, label="File")
         self.file_menu.add_command(label="New...")
         self.file_menu.add_command(label="Open...")
+        self.file_menu.add_command(label="Close project", state=tk.DISABLED)
         self.file_menu.add_separator()
-        self.file_menu.add_command(label="Close", command=self.try_to_close)
+        self.file_menu.add_command(label="Exit", command=self.try_to_close)
+
+    def create_edit_menu(self) -> None:
+        """
+        Create the edit menu.
+
+        :return: None.
+        """
+        self.edit_menu = tk.Menu(self.menu_bar)
+        self.menu_bar.add_cascade(menu=self.edit_menu, label="Edit")
+        self.edit_menu.add_command(label="Open .cpypmconfig", state=tk.DISABLED)
+        self.edit_menu.add_command(label="Open .cpypmconfig file location", state=tk.DISABLED)
+
+    def create_sync_menu(self) -> None:
+        """
+        Create the sync menu.
+
+        :return: None.
+        """
+        self.sync_menu = tk.Menu(self.menu_bar)
+        self.menu_bar.add_cascade(menu=self.sync_menu, label="Sync")
+        self.sync_menu.add_command(label="Sync files", state=tk.DISABLED)
+
+    def create_help_menu(self) -> None:
+        """
+        Create the help menu.
+
+        :return: None.
+        """
+        self.help_menu = tk.Menu(self.menu_bar)
+        self.menu_bar.add_cascade(menu=self.help_menu, label="Help")
+        self.help_menu.add_command(label="Open README.md")
+        self.help_menu.add_command(label="Open project on GitHub")
 
     def create_menu(self) -> None:
         """
@@ -147,6 +180,9 @@ class GUI(tk.Tk):
         self.menu_bar = tk.Menu(self)
         self["menu"] = self.menu_bar
         self.create_file_menu()
+        self.create_edit_menu()
+        self.create_sync_menu()
+        self.create_help_menu()
 
     def create_gui(self) -> None:
         """
