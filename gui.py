@@ -176,6 +176,22 @@ class GUI(tk.Tk):
         dlg.grab_set()
         return dlg
 
+    def open_new_project_directory(self) -> None:
+        """
+        Open a directory and return None or a pathlib.Path.
+
+        :return: None.
+        """
+        logger.debug("Opening directory...")
+        path = fd.askdirectory(initialdir=str(Path.cwd()),
+                               title="CircuitPython Project Manager: Select a directory")
+        if path:
+            path = Path(path)
+            logger.debug(f"Returned valid path! Path is {repr(path)}")
+            self.project_location_var.set(str(path))
+        else:
+            logger.debug("User canceled opening project!")
+
     def create_new_project(self) -> None:
         """
         Create a new project. This will open a new window.
@@ -183,8 +199,20 @@ class GUI(tk.Tk):
         :return: None.
         """
         logger.debug("Creating new project...")
-        new_project_window = self.create_dialog()
-        new_project_window.wait_window()
+        self.new_project_window = self.create_dialog()
+        self.project_location_frame = ttk.Frame(master=self.new_project_window)
+        self.project_location_frame.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.project_location_label = ttk.Label(master=self.project_location_frame, text="Project location: ")
+        self.project_location_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.project_location_var = tk.StringVar()
+        self.project_location_entry = EntryWithRightClick(master=self.project_location_frame,
+                                                          textvariable=self.project_location_var, width=50)
+        self.project_location_entry.initiate_right_click_menu()
+        self.project_location_entry.grid(row=0, column=1, padx=1, pady=1, sticky=tk.NW)
+        self.project_location_button = ttk.Button(master=self.project_location_frame, text="Browse...",
+                                                  command=self.open_new_project_directory)
+        self.project_location_button.grid(row=0, column=2, padx=1, pady=1, sticky=tk.NW)
+        self.new_project_window.wait_window()
 
     def create_file_menu(self) -> None:
         """
