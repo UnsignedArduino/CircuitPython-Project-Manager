@@ -167,8 +167,27 @@ class GUI(tk.Tk):
         """
         self.help_menu = tk.Menu(self.menu_bar)
         self.menu_bar.add_cascade(menu=self.help_menu, label="Help")
-        self.help_menu.add_command(label="Open README.md")
-        self.help_menu.add_command(label="Open project on GitHub")
+        self.help_menu.add_command(label="Open README.md", state=tk.DISABLED)
+        self.help_menu.add_command(label="Open project on GitHub", state=tk.DISABLED)
+
+    def update_menu_state(self) -> None:
+        """
+        Update the menu's disable and enabled items.
+
+        :return: None.
+        """
+        self.file_menu.entryconfigure("New...",
+                                      state=tk.NORMAL if self.cpypmconfig_path is None else tk.DISABLED)
+        self.file_menu.entryconfigure("Open...",
+                                      state=tk.NORMAL if self.cpypmconfig_path is None else tk.DISABLED)
+        self.file_menu.entryconfigure("Close project",
+                                      state=tk.DISABLED if self.cpypmconfig_path is None else tk.NORMAL)
+        self.edit_menu.entryconfigure("Open .cpypmconfig",
+                                      state=tk.DISABLED if self.cpypmconfig_path is None else tk.NORMAL)
+        self.edit_menu.entryconfigure("Open .cpypmconfig file location",
+                                      state=tk.DISABLED if self.cpypmconfig_path is None else tk.NORMAL)
+        self.sync_menu.entryconfigure("Sync files",
+                                      state=tk.DISABLED if self.cpypmconfig_path is None else tk.NORMAL)
 
     def create_menu(self) -> None:
         """
@@ -183,6 +202,8 @@ class GUI(tk.Tk):
         self.create_edit_menu()
         self.create_sync_menu()
         self.create_help_menu()
+        self.cpypmconfig_path = None
+        self.update_menu_state()
 
     def create_gui(self) -> None:
         """
