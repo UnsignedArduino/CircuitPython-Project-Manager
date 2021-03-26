@@ -135,7 +135,7 @@ class TextWithRightClick(tk.Text):
                                                                      f" characters into the clipboard which might "
                                                                      f"crash the application - are you sure you "
                                                                      f"want to continue?", icon="warning",
-                                                                     default="cancel"):
+                                                                     default="cancel") or len(self.selection_get()) <= 20000:
                 logger.debug(f"Copying {repr(self.selection_get())} to clipboard!")
                 self.copy_to_clipboard(self.selection_get())
                 self.tag_remove(tk.SEL, self.tag_ranges(tk.SEL)[0], self.tag_ranges(tk.SEL)[1])
@@ -147,7 +147,7 @@ class TextWithRightClick(tk.Text):
                                                                          f" characters into the clipboard which might "
                                                                          f"crash the application - are you sure you "
                                                                          f"want to continue?", icon="warning",
-                                                                         default="cancel"):
+                                                                         default="cancel") or len(self.get("1.0", tk.END)) <= 20000:
                 logger.debug(f"Copying everything to clipboard!")
                 self.copy_to_clipboard(self.get("1.0", tk.END))
 

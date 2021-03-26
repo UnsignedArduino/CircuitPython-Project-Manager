@@ -23,6 +23,7 @@ from gui_tools.right_click.entry import EntryWithRightClick
 from gui_tools.right_click.spinbox import SpinboxWithRightClick
 from gui_tools.right_click.combobox import ComboboxWithRightClick
 from gui_tools.right_click.listbox import ListboxWithRightClick
+from gui_tools.right_click.text import TextWithRightClick
 from gui_tools.idlelib_clone import tooltip
 from gui_tools.scrollable_frame import VerticalScrolledFrame
 from threading import Thread
@@ -133,7 +134,7 @@ class GUI(tk.Tk):
         """
         logger.debug("Opening project...")
         path = fd.askopenfilename(initialdir=str(Path.cwd()),
-                                  title="CircuitPython Project Manager: Select a .cpypmconfig",
+                                  title="CircuitPython Project Manager: Select a .cpypmconfig file",
                                   filetypes=((".cpypmconfig files", "*.cpypmconfig"), ("All files", "*.*")))
         if path:
             path = Path(path)
@@ -163,15 +164,18 @@ class GUI(tk.Tk):
         dlg.grab_release()
         dlg.destroy()
 
-    def create_dialog(self) -> tk.Toplevel:
+    def create_dialog(self, title: str) -> tk.Toplevel:
         """
         Create a dialog and return it.
 
+        :param title: The title of the dialog.
         :return:
         """
         dlg = tk.Toplevel(master=self)
         dlg.protocol("WM_DELETE_WINDOW", lambda: self.dismiss_dialog(dlg))
         dlg.transient(self)
+        dlg.resizable(False, False)
+        dlg.title(title)
         dlg.wait_visibility()
         dlg.grab_set()
         return dlg
@@ -192,6 +196,45 @@ class GUI(tk.Tk):
         else:
             logger.debug("User canceled opening project!")
 
+    def create_new_project_location(self) -> None:
+        """
+        Create the new project location widgets.
+
+        :return: None.
+        """
+        self.project_location_frame = ttk.Frame(master=self.new_project_window)
+        self.project_location_frame.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.project_location_label = ttk.Label(master=self.project_location_frame, text="Project location: ")
+        self.project_location_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.project_location_var = tk.StringVar()
+        self.project_location_entry = EntryWithRightClick(master=self.project_location_frame,
+                                                          textvariable=self.project_location_var, width=51)
+        self.project_location_entry.initiate_right_click_menu()
+        self.project_location_entry.grid(row=0, column=1, padx=1, pady=1, sticky=tk.NW)
+        self.project_location_button = ttk.Button(master=self.project_location_frame, text="Browse...",
+                                                  command=self.open_new_project_directory)
+        self.project_location_button.grid(row=0, column=2, padx=1, pady=0, sticky=tk.NW)
+
+    def create_new_project_details(self) -> None:
+        """
+        Create the new project detail widgets, like title and description.
+
+        :return: None.
+        """
+        self.project_details_frame = ttk.Frame(master=self.new_project_window)
+        self.project_details_frame.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.project_title_label = ttk.Label(master=self.project_details_frame, text="Project title: ")
+        self.project_title_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.project_title_var = tk.StringVar(value="Untitled")
+        self.project_title_entry = EntryWithRightClick(master=self.project_details_frame, width=67, textvariable=self.project_title_var)
+        self.project_title_entry.initiate_right_click_menu()
+        self.project_title_entry.grid(row=0, column=1, padx=1, pady=1, sticky=tk.NW)
+        self.project_description_label = ttk.Label(master=self.project_details_frame, text="Project description: ")
+        self.project_description_label.grid(row=1, column=0, columnspan=2, padx=1, pady=1, sticky=tk.NW)
+        self.project_description_text = TextWithRightClick(master=self.project_details_frame, width=60, height=10)
+        self.project_description_text.initiate_right_click_menu()
+        self.project_description_text.grid(row=2, column=0, columnspan=2, padx=1, pady=1, sticky=tk.NW)
+
     def create_new_project(self) -> None:
         """
         Create a new project. This will open a new window.
@@ -199,19 +242,9 @@ class GUI(tk.Tk):
         :return: None.
         """
         logger.debug("Creating new project...")
-        self.new_project_window = self.create_dialog()
-        self.project_location_frame = ttk.Frame(master=self.new_project_window)
-        self.project_location_frame.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
-        self.project_location_label = ttk.Label(master=self.project_location_frame, text="Project location: ")
-        self.project_location_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
-        self.project_location_var = tk.StringVar()
-        self.project_location_entry = EntryWithRightClick(master=self.project_location_frame,
-                                                          textvariable=self.project_location_var, width=50)
-        self.project_location_entry.initiate_right_click_menu()
-        self.project_location_entry.grid(row=0, column=1, padx=1, pady=1, sticky=tk.NW)
-        self.project_location_button = ttk.Button(master=self.project_location_frame, text="Browse...",
-                                                  command=self.open_new_project_directory)
-        self.project_location_button.grid(row=0, column=2, padx=1, pady=1, sticky=tk.NW)
+        self.new_project_window = self.create_dialog(title="CircuitPython Project Manager: Make a new project...")
+        self.create_new_project_location()
+        self.create_new_project_details()
         self.new_project_window.wait_window()
 
     def create_file_menu(self) -> None:
