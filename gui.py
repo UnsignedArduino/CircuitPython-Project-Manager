@@ -30,6 +30,7 @@ from threading import Thread
 from pathlib import Path
 import traceback
 import json
+from webbrowser import open as open_application
 from pathlib import Path
 from project_tools import drives, os_detect, project
 from typing import Union, Any
@@ -372,8 +373,10 @@ class GUI(tk.Tk):
         """
         self.edit_menu = tk.Menu(self.menu_bar)
         self.menu_bar.add_cascade(menu=self.edit_menu, label="Edit")
-        self.edit_menu.add_command(label="Open .cpypmconfig")
-        self.edit_menu.add_command(label="Open .cpypmconfig file location")
+        self.edit_menu.add_command(label="Open .cpypmconfig",
+                                   command=lambda: open_application(self.cpypmconfig_path))
+        self.edit_menu.add_command(label="Open .cpypmconfig file location",
+                                   command=lambda: open_application(self.cpypmconfig_path.parent))
 
     def create_sync_menu(self) -> None:
         """
