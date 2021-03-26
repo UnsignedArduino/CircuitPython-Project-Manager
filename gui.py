@@ -161,8 +161,25 @@ class GUI(tk.Tk):
         :param dlg: The dialog to destroy.
         :return: None.
         """
-        dlg.grab_release()
-        dlg.destroy()
+        if self.disable_closing:
+            logger.warning("Currently in the middle of doing something!")
+            if mbox.askokcancel("CircuitPython Project Manager: Confirmation",
+                                "Something is happening right now!\n"
+                                "If you close out now, this will immediately stop what we are doing and may cause a "
+                                "corrupt directory hierarchy, broken files and/or broken directories. "
+                                "Are you sure you want to exit?",
+                                icon="warning", default="cancel"):
+                logger.debug("User continued to close window!")
+                logger.debug("Destroying dialog")
+                try:
+                    dlg.grab_release()
+                    dlg.destroy()
+                except tk.TclError:
+                    pass
+        else:
+            logger.debug("Destroying dialog")
+            dlg.grab_release()
+            dlg.destroy()
 
     def create_dialog(self, title: str) -> tk.Toplevel:
         """
@@ -274,9 +291,11 @@ class GUI(tk.Tk):
 
         :return: None.
         """
+        self.disable_closing = True
         self.set_childrens_state(self.new_project_frame, False)
-        # TODO: Disable closing dialog
         # TODO: Make new project
+        self.disable_closing = False
+        self.dismiss_dialog(self.new_project_window)
 
     def open_create_new_project(self) -> None:
         """
