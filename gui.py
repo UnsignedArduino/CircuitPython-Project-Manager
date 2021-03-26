@@ -143,6 +143,16 @@ class GUI(tk.Tk):
         else:
             logger.debug(f"User canceled opening project!")
 
+    def close_project(self) -> None:
+        """
+        Close a project.
+
+        :return: None.
+        """
+        logger.debug(f"Closing project...")
+        self.cpypmconfig_path = None
+        self.update_menu_state()
+
     def create_file_menu(self) -> None:
         """
         Create the file menu.
@@ -153,7 +163,7 @@ class GUI(tk.Tk):
         self.menu_bar.add_cascade(menu=self.file_menu, label="File")
         self.file_menu.add_command(label="New...")
         self.file_menu.add_command(label="Open...", command=self.open_project)
-        self.file_menu.add_command(label="Close project", state=tk.DISABLED)
+        self.file_menu.add_command(label="Close project", command=self.close_project)
         self.file_menu.add_separator()
         self.file_menu.add_command(label="Exit", command=self.try_to_close)
 
@@ -165,8 +175,8 @@ class GUI(tk.Tk):
         """
         self.edit_menu = tk.Menu(self.menu_bar)
         self.menu_bar.add_cascade(menu=self.edit_menu, label="Edit")
-        self.edit_menu.add_command(label="Open .cpypmconfig", state=tk.DISABLED)
-        self.edit_menu.add_command(label="Open .cpypmconfig file location", state=tk.DISABLED)
+        self.edit_menu.add_command(label="Open .cpypmconfig")
+        self.edit_menu.add_command(label="Open .cpypmconfig file location")
 
     def create_sync_menu(self) -> None:
         """
@@ -176,7 +186,7 @@ class GUI(tk.Tk):
         """
         self.sync_menu = tk.Menu(self.menu_bar)
         self.menu_bar.add_cascade(menu=self.sync_menu, label="Sync")
-        self.sync_menu.add_command(label="Sync files", state=tk.DISABLED)
+        self.sync_menu.add_command(label="Sync files")
 
     def create_help_menu(self) -> None:
         """
