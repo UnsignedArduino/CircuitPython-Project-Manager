@@ -235,6 +235,20 @@ class GUI(tk.Tk):
         self.project_description_text.initiate_right_click_menu()
         self.project_description_text.grid(row=2, column=0, columnspan=2, padx=1, pady=1, sticky=tk.NW)
 
+    def create_new_project_buttons(self) -> None:
+        """
+        Create the new project buttons, like Ok and Cancel.
+
+        :return: None.
+        """
+        self.project_buttons_frame = ttk.Frame(master=self.new_project_window)
+        self.project_buttons_frame.grid(row=2, column=0, padx=1, pady=1, sticky=tk.N)
+        self.make_new_project_button = ttk.Button(master=self.project_buttons_frame, text="Make new project")
+        self.make_new_project_button.grid(row=0, column=0, padx=1, pady=1, sticky=tk.N)
+        self.cancel_new_project_button = ttk.Button(master=self.project_buttons_frame, text="Cancel",
+                                                    command=lambda: self.dismiss_dialog(self.new_project_window))
+        self.cancel_new_project_button.grid(row=0, column=1, padx=1, pady=1, sticky=tk.N)
+
     def create_new_project(self) -> None:
         """
         Create a new project. This will open a new window.
@@ -245,6 +259,7 @@ class GUI(tk.Tk):
         self.new_project_window = self.create_dialog(title="CircuitPython Project Manager: Make a new project...")
         self.create_new_project_location()
         self.create_new_project_details()
+        self.create_new_project_buttons()
         self.new_project_window.wait_window()
 
     def create_file_menu(self) -> None:
