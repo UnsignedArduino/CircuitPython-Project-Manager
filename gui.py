@@ -323,9 +323,10 @@ class GUI(tk.Tk):
         :return: None.
         """
         # TODO: Check box to auto generate .gitignore
-        project.make_new_project(parent_directory=Path(self.project_location_var.get()),
-                                 project_name=self.project_title_var.get(),
-                                 project_description=self.project_description_text.get("1.0", tk.END))
+        self.cpypmconfig_path = project.make_new_project(parent_directory=Path(self.project_location_var.get()),
+                                                         project_name=self.project_title_var.get(),
+                                                         project_description=self.project_description_text.get("1.0", tk.END))
+        self.update_menu_state()
         self.disable_closing = False
         self.dismiss_dialog(self.new_project_window)
 

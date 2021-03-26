@@ -41,7 +41,7 @@ def replace_sus_chars(file_name: str) -> str:
 
 def make_new_project(parent_directory: Path, project_name: str = "Untitled", project_description: str = "",
                      autogen_gitignore: bool = True,
-                     dfl_cpy_hierarchy: Path = (Path.cwd() / "default_circuitpython_hierarchy")) -> None:
+                     dfl_cpy_hierarchy: Path = (Path.cwd() / "default_circuitpython_hierarchy")) -> Path:
     """
     Make a new CircuitPython project.
 
@@ -51,7 +51,7 @@ def make_new_project(parent_directory: Path, project_name: str = "Untitled", pro
     :param autogen_gitignore: A bool - whether to auto-generate a .gitignore for the project - defaults to True.
     :param dfl_cpy_hierarchy: A pathlib.Path - where we copy the base project files from - defaults to
      Path.cwd() / "default_circuitpython_hierarchy"
-    :return: None.
+    :return: A pathlib.Path to the .cpypmconfig file.
     """
     project_path = parent_directory / dfl_cpy_hierarchy.name
     logger.debug(f"Copying from {repr(dfl_cpy_hierarchy)} to {repr(project_path)}")
@@ -79,6 +79,7 @@ def make_new_project(parent_directory: Path, project_name: str = "Untitled", pro
         gitignore_path.write_text(gitignore)
         logger.debug(f"Wrote .gitignore")
     logger.info(f"Made new project at {repr(new_path)}")
+    return cpypm_path
 
 
 def sync_project(cpypm_config_path: Path) -> None:
