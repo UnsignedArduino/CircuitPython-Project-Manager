@@ -18,6 +18,7 @@ No functions!
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox as mbox
+from tkinter import filedialog as fd
 from gui_tools.right_click.entry import EntryWithRightClick
 from gui_tools.right_click.spinbox import SpinboxWithRightClick
 from gui_tools.right_click.combobox import ComboboxWithRightClick
@@ -124,6 +125,24 @@ class GUI(tk.Tk):
         :return: None.
         """
 
+    def open_project(self) -> None:
+        """
+        Open a project.
+
+        :return: None.
+        """
+        logger.debug("Opening project...")
+        path = fd.askopenfilename(initialdir=str(Path.cwd()),
+                                  title="CircuitPython Project Manager: Select a .cpypmconfig",
+                                  filetypes=((".cpypmconfig files", "*.cpypmconfig"), ("All files", "*.*")))
+        if path:
+            path = Path(path)
+            logger.debug(f"Returned valid path! Path is {repr(path)}")
+            self.cpypmconfig_path = path
+            self.update_menu_state()
+        else:
+            logger.debug(f"User canceled opening project!")
+
     def create_file_menu(self) -> None:
         """
         Create the file menu.
@@ -133,7 +152,7 @@ class GUI(tk.Tk):
         self.file_menu = tk.Menu(self.menu_bar)
         self.menu_bar.add_cascade(menu=self.file_menu, label="File")
         self.file_menu.add_command(label="New...")
-        self.file_menu.add_command(label="Open...")
+        self.file_menu.add_command(label="Open...", command=self.open_project)
         self.file_menu.add_command(label="Close project", state=tk.DISABLED)
         self.file_menu.add_separator()
         self.file_menu.add_command(label="Exit", command=self.try_to_close)
@@ -176,6 +195,7 @@ class GUI(tk.Tk):
 
         :return: None.
         """
+        logger.debug(f"Updating menu state...")
         self.file_menu.entryconfigure("New...",
                                       state=tk.NORMAL if self.cpypmconfig_path is None else tk.DISABLED)
         self.file_menu.entryconfigure("Open...",
