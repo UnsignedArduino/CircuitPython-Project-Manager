@@ -252,6 +252,24 @@ class GUI(tk.Tk):
         self.project_description_text.initiate_right_click_menu()
         self.project_description_text.grid(row=2, column=0, columnspan=2, padx=1, pady=1, sticky=tk.NW)
 
+    def update_new_project_buttons(self) -> None:
+        """
+        Update the new project buttons.
+
+        :return: None.
+        """
+        try:
+            enable = True
+            if not self.project_title_var.get():
+                enable = False
+            if not self.project_location_var.get():
+                enable = False
+            self.make_new_project_button.config(state=tk.NORMAL if enable else tk.DISABLED)
+        except tk.TclError:
+            pass
+        else:
+            self.after(ms=100, func=self.update_new_project_buttons)
+
     def create_new_project_buttons(self) -> None:
         """
         Create the new project buttons, like Ok and Cancel.
@@ -266,6 +284,7 @@ class GUI(tk.Tk):
         self.cancel_new_project_button = ttk.Button(master=self.project_buttons_frame, text="Cancel",
                                                     command=lambda: self.dismiss_dialog(self.new_project_window))
         self.cancel_new_project_button.grid(row=0, column=1, padx=1, pady=1, sticky=tk.N)
+        self.update_new_project_buttons()
 
     def set_childrens_state(self, frame, enabled: bool = True) -> None:
         """
@@ -293,7 +312,20 @@ class GUI(tk.Tk):
         """
         self.disable_closing = True
         self.set_childrens_state(self.new_project_frame, False)
-        # TODO: Make new project
+        thread = Thread(target=self.create_new_project, args=(), daemon=True)
+        logger.debug(f"Starting create new project thread {repr(thread)}")
+        thread.start()
+
+    def create_new_project(self) -> None:
+        """
+        Create a new project - this will block.
+
+        :return: None.
+        """
+        # TODO: Check box to auto generate .gitignore
+        project.make_new_project(parent_directory=Path(self.project_location_var.get()),
+                                 project_name=self.project_title_var.get(),
+                                 project_description=self.project_description_text.get("1.0", tk.END))
         self.disable_closing = False
         self.dismiss_dialog(self.new_project_window)
 
