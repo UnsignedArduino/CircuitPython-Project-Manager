@@ -23,7 +23,7 @@ from tkinter import messagebox as mbox
 from pathlib import Path
 import requests
 import traceback
-from bundle_tools.create_logger import create_logger
+from project_tools.create_logger import create_logger
 import logging
 
 logger = create_logger(name=__name__, level=logging.DEBUG)

@@ -27,7 +27,7 @@ def create_logger(name: str = __name__, level: int = logging.DEBUG) -> logging.g
 
     -----------
 
-    from bundle_tools.create_logger import create_logger
+    from project_tools.create_logger import create_logger
 
     import logging
 

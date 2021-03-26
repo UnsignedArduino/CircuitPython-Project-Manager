@@ -20,7 +20,7 @@ Functions list:
 
 from platform import system
 from enum import Enum
-from bundle_tools.create_logger import create_logger
+from project_tools.create_logger import create_logger
 import logging
 
 logger = create_logger(name=__name__, level=logging.DEBUG)
