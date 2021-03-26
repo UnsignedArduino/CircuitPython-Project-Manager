@@ -124,6 +124,30 @@ class GUI(tk.Tk):
         :return: None.
         """
 
+    def create_file_menu(self) -> None:
+        """
+        Create the file menu.
+
+        :return: None.
+        """
+        self.file_menu = tk.Menu(self.menu_bar)
+        self.menu_bar.add_cascade(menu=self.file_menu, label="File")
+        self.file_menu.add_command(label="New...")
+        self.file_menu.add_command(label="Open...")
+        self.file_menu.add_separator()
+        self.file_menu.add_command(label="Close", command=self.try_to_close)
+
+    def create_menu(self) -> None:
+        """
+        Create the menu.
+
+        :return: None.
+        """
+        self.option_add("*tearOff", tk.FALSE)
+        self.menu_bar = tk.Menu(self)
+        self["menu"] = self.menu_bar
+        self.create_file_menu()
+
     def create_gui(self) -> None:
         """
         Create the GUI.
@@ -135,6 +159,7 @@ class GUI(tk.Tk):
             self.global_style = ttk.Style()
             self.global_style.theme_use("clam")
         self.create_config()
+        self.create_menu()
 
     def run(self) -> None:
         """
