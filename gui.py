@@ -243,14 +243,18 @@ class GUI(tk.Tk):
         self.project_title_label = ttk.Label(master=self.project_details_frame, text="Project title: ")
         self.project_title_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
         self.project_title_var = tk.StringVar(value="Untitled")
-        self.project_title_entry = EntryWithRightClick(master=self.project_details_frame, width=67, textvariable=self.project_title_var)
+        self.project_title_entry = EntryWithRightClick(master=self.project_details_frame, width=40, textvariable=self.project_title_var)
         self.project_title_entry.initiate_right_click_menu()
         self.project_title_entry.grid(row=0, column=1, padx=1, pady=1, sticky=tk.NW)
+        self.project_autogen_var = tk.BooleanVar(value=True)
+        self.project_autogen_checkbox = ttk.Checkbutton(master=self.project_details_frame, text="Auto-generate a .gitignore",
+                                                        variable=self.project_autogen_var)
+        self.project_autogen_checkbox.grid(row=0, column=2, padx=1, pady=1, sticky=tk.NW)
         self.project_description_label = ttk.Label(master=self.project_details_frame, text="Project description: ")
-        self.project_description_label.grid(row=1, column=0, columnspan=2, padx=1, pady=1, sticky=tk.NW)
+        self.project_description_label.grid(row=1, column=0, columnspan=3, padx=1, pady=1, sticky=tk.NW)
         self.project_description_text = TextWithRightClick(master=self.project_details_frame, width=60, height=10)
         self.project_description_text.initiate_right_click_menu()
-        self.project_description_text.grid(row=2, column=0, columnspan=2, padx=1, pady=1, sticky=tk.NW)
+        self.project_description_text.grid(row=2, column=0, columnspan=3, padx=1, pady=1, sticky=tk.NW)
 
     def update_new_project_buttons(self) -> None:
         """
@@ -325,7 +329,8 @@ class GUI(tk.Tk):
         # TODO: Check box to auto generate .gitignore
         self.cpypmconfig_path = project.make_new_project(parent_directory=Path(self.project_location_var.get()),
                                                          project_name=self.project_title_var.get(),
-                                                         project_description=self.project_description_text.get("1.0", tk.END))
+                                                         project_description=self.project_description_text.get("1.0", tk.END),
+                                                         autogen_gitignore=self.project_autogen_var.get())
         self.update_menu_state()
         self.disable_closing = False
         self.dismiss_dialog(self.new_project_window)
