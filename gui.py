@@ -141,7 +141,7 @@ class GUI(tk.Tk):
             self.cpypmconfig_path = path
             self.update_menu_state()
         else:
-            logger.debug(f"User canceled opening project!")
+            logger.debug("User canceled opening project!")
 
     def close_project(self) -> None:
         """
@@ -149,9 +149,42 @@ class GUI(tk.Tk):
 
         :return: None.
         """
-        logger.debug(f"Closing project...")
+        logger.debug("Closing project...")
         self.cpypmconfig_path = None
         self.update_menu_state()
+
+    def dismiss_dialog(self, dlg: tk.Toplevel) -> None:
+        """
+        Intercept a dialog's close button to make sure we release the window grab.
+
+        :param dlg: The dialog to destroy.
+        :return: None.
+        """
+        dlg.grab_release()
+        dlg.destroy()
+
+    def create_dialog(self) -> tk.Toplevel:
+        """
+        Create a dialog and return it.
+
+        :return:
+        """
+        dlg = tk.Toplevel(master=self)
+        dlg.protocol("WM_DELETE_WINDOW", lambda: self.dismiss_dialog(dlg))
+        dlg.transient(self)
+        dlg.wait_visibility()
+        dlg.grab_set()
+        return dlg
+
+    def create_new_project(self) -> None:
+        """
+        Create a new project. This will open a new window.
+
+        :return: None.
+        """
+        logger.debug("Creating new project...")
+        new_project_window = self.create_dialog()
+        new_project_window.wait_window()
 
     def create_file_menu(self) -> None:
         """
@@ -161,7 +194,7 @@ class GUI(tk.Tk):
         """
         self.file_menu = tk.Menu(self.menu_bar)
         self.menu_bar.add_cascade(menu=self.file_menu, label="File")
-        self.file_menu.add_command(label="New...")
+        self.file_menu.add_command(label="New...", command=self.create_new_project)
         self.file_menu.add_command(label="Open...", command=self.open_project)
         self.file_menu.add_command(label="Close project", command=self.close_project)
         self.file_menu.add_separator()
