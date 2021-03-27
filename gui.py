@@ -315,8 +315,6 @@ class GUI(tk.Tk):
 
         :return: None.
         """
-        self.disable_closing = True
-        self.set_childrens_state(self.new_project_frame, False)
         thread = Thread(target=self.create_new_project, args=(), daemon=True)
         logger.debug(f"Starting create new project thread {repr(thread)}")
         thread.start()
@@ -327,7 +325,8 @@ class GUI(tk.Tk):
 
         :return: None.
         """
-        # TODO: Check box to auto generate .gitignore
+        self.disable_closing = True
+        self.set_childrens_state(self.new_project_frame, False)
         self.cpypmconfig_path = project.make_new_project(parent_directory=Path(self.project_location_var.get()),
                                                          project_name=self.project_title_var.get(),
                                                          project_description=self.project_description_text.get("1.0", tk.END),
@@ -378,6 +377,28 @@ class GUI(tk.Tk):
         self.edit_menu.add_command(label="Open .cpypmconfig file location",
                                    command=lambda: open_application(self.cpypmconfig_path.parent))
 
+    def sync_files(self) -> None:
+        """
+        Sync the files - this will block.
+
+        :return: None.
+        """
+        self.disable_closing = True
+        self.sync_menu.entryconfigure("Sync files", state=tk.DISABLED)
+        # TODO: Actually sync files
+        self.sync_menu.entryconfigure("Sync files", state=tk.NORMAL)
+        self.disable_closing = False
+
+    def start_sync_files_thread(self) -> None:
+        """
+        Start the sync files thread.
+
+        :return: None.
+        """
+        thread = Thread(target=self.sync_files, args=(), daemon=True)
+        logger.debug(f"Starting sync file thread {repr(thread)}")
+        thread.start()
+
     def create_sync_menu(self) -> None:
         """
         Create the sync menu.
@@ -386,7 +407,7 @@ class GUI(tk.Tk):
         """
         self.sync_menu = tk.Menu(self.menu_bar)
         self.menu_bar.add_cascade(menu=self.sync_menu, label="Sync")
-        self.sync_menu.add_command(label="Sync files")
+        self.sync_menu.add_command(label="Sync files", command=self.start_sync_files_thread)
 
     def create_help_menu(self) -> None:
         """
