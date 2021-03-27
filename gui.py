@@ -463,6 +463,39 @@ class GUI(tk.Tk):
         self.cpypmconfig_path = None
         self.update_menu_state()
 
+    def destroy_all_children(self, widget):
+        """
+        Destroy all the children of the widget.
+
+        :param widget: The parent of the children you want to destroy.
+        :return: None.
+        """
+        logger.debug(f"Destroying all children of {repr(widget)}")
+        for child in widget.winfo_children():
+            try:
+                child.destroy()
+            except tk.TclError:
+                pass
+
+    def update_main_gui(self) -> None:
+        """
+        Update the main GUI.
+
+        :return: None.
+        """
+        logger.debug("Updating main GUI...")
+        self.destroy_all_children(widget=self.main_frame)
+
+    def make_main_gui(self) -> None:
+        """
+        Make the main GUI stuffs.
+
+        :return: None.
+        """
+        self.main_frame = ttk.Frame(master=self, width=200, height=100)
+        self.main_frame.grid(row=0, column=0, sticky=tk.NW)
+        self.update_main_gui()
+
     def create_gui(self) -> None:
         """
         Create the GUI.
@@ -475,6 +508,7 @@ class GUI(tk.Tk):
             self.global_style.theme_use("clam")
         self.create_config()
         self.create_menu()
+        self.make_main_gui()
 
     def run(self) -> None:
         """
