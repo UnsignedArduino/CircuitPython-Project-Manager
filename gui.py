@@ -488,10 +488,10 @@ class GUI(tk.Tk):
         logger.debug("Updating main GUI...")
         self.destroy_all_children(widget=self.main_frame)
         if self.cpypmconfig_path is None:
-            tk.Label(master=self.main_frame,
-                     text="No project is open! Use the file menu to create\na new project or open an existing project!"
+            tk.Label(
+                master=self.main_frame,
+                text="No project is open! Use the file menu to create\na new project or open an existing project!"
             ).grid(row=0, column=0, sticky=tk.NW)
-
         else:
             pass
 
