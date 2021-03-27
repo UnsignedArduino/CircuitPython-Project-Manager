@@ -26,6 +26,7 @@ from gui_tools.right_click.listbox import ListboxWithRightClick
 from gui_tools.right_click.text import TextWithRightClick
 from gui_tools.idlelib_clone import tooltip
 from gui_tools.scrollable_frame import VerticalScrolledFrame
+from gui_tools.clickable_label import ClickableLabel
 from threading import Thread
 from pathlib import Path
 import traceback
@@ -487,7 +488,10 @@ class GUI(tk.Tk):
         logger.debug("Updating main GUI...")
         self.destroy_all_children(widget=self.main_frame)
         if self.cpypmconfig_path is None:
-            pass
+            tk.Label(master=self.main_frame,
+                     text="No project is open! Use the file menu to create\na new project or open an existing project!"
+            ).grid(row=0, column=0, sticky=tk.NW)
+
         else:
             pass
 
@@ -497,7 +501,7 @@ class GUI(tk.Tk):
 
         :return: None.
         """
-        self.main_frame = ttk.Frame(master=self, width=200, height=100)
+        self.main_frame = ttk.Frame(master=self)
         self.main_frame.grid(row=0, column=0, sticky=tk.NW)
         self.update_main_gui()
 
@@ -523,6 +527,7 @@ class GUI(tk.Tk):
         """
         self.create_gui()
         self.lift()
+        self.minsize(width=200, height=100)
         self.mainloop()
 
     def __exit__(self, err_type=None, err_value=None, err_traceback=None):
