@@ -267,7 +267,7 @@ class GUI(tk.Tk):
             enable = True
             if not self.project_title_var.get():
                 enable = False
-            if not self.project_location_var.get():
+            if not self.project_location_var.get() or not Path(self.project_location_var.get()).exists():
                 enable = False
             self.make_new_project_button.config(state=tk.NORMAL if enable else tk.DISABLED)
         except tk.TclError:
