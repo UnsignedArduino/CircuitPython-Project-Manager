@@ -110,5 +110,5 @@ def sync_project(cpypm_config_path: Path) -> None:
         else:
             if new_path.exists():
                 shutil.rmtree(new_path, ignore_errors=True)
-            new_path.mkdir(parents=True, exist_ok=True)
+            # new_path.mkdir(parents=True, exist_ok=True)
             shutil.copytree(path, new_path)

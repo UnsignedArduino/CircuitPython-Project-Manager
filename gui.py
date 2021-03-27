@@ -385,7 +385,7 @@ class GUI(tk.Tk):
         """
         self.disable_closing = True
         self.sync_menu.entryconfigure("Sync files", state=tk.DISABLED)
-        # TODO: Actually sync files
+        project.sync_project(cpypm_config_path=self.cpypmconfig_path)
         self.sync_menu.entryconfigure("Sync files", state=tk.NORMAL)
         self.disable_closing = False
 
