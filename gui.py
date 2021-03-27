@@ -141,7 +141,7 @@ class GUI(tk.Tk):
             path = Path(path)
             logger.debug(f"Returned valid path! Path is {repr(path)}")
             self.cpypmconfig_path = path
-            self.update_menu_state()
+            self.update_main_gui()
         else:
             logger.debug("User canceled opening project!")
 
@@ -153,7 +153,7 @@ class GUI(tk.Tk):
         """
         logger.debug("Closing project...")
         self.cpypmconfig_path = None
-        self.update_menu_state()
+        self.update_main_gui()
 
     def dismiss_dialog(self, dlg: tk.Toplevel) -> None:
         """
@@ -331,7 +331,7 @@ class GUI(tk.Tk):
                                                          project_name=self.project_title_var.get(),
                                                          project_description=self.project_description_text.get("1.0", tk.END),
                                                          autogen_gitignore=self.project_autogen_var.get())
-        self.update_menu_state()
+        self.update_main_gui()
         self.disable_closing = False
         self.dismiss_dialog(self.new_project_window)
 
@@ -483,8 +483,13 @@ class GUI(tk.Tk):
 
         :return: None.
         """
+        self.update_menu_state()
         logger.debug("Updating main GUI...")
         self.destroy_all_children(widget=self.main_frame)
+        if self.cpypmconfig_path is None:
+            pass
+        else:
+            pass
 
     def make_main_gui(self) -> None:
         """
