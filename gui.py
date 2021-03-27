@@ -437,8 +437,10 @@ class GUI(tk.Tk):
                                       state=tk.DISABLED if self.cpypmconfig_path is None else tk.NORMAL)
         self.edit_menu.entryconfigure("Open .cpypmconfig file location",
                                       state=tk.DISABLED if self.cpypmconfig_path is None else tk.NORMAL)
-        self.sync_menu.entryconfigure("Sync files",
-                                      state=tk.DISABLED if self.cpypmconfig_path is None else tk.NORMAL)
+        if self.cpypmconfig_path is None or json.loads(self.cpypmconfig_path.read_text())["sync_location"] is None:
+            self.sync_menu.entryconfigure("Sync files", state=tk.DISABLED)
+        else:
+            self.sync_menu.entryconfigure("Sync files", state=tk.NORMAL)
 
     def create_menu(self) -> None:
         """
@@ -447,7 +449,7 @@ class GUI(tk.Tk):
         :return: None.
         """
         self.option_add("*tearOff", tk.FALSE)
-        self.menu_bar = tk.Menu(self)
+        self.menu_bar = tk.Menu(self, postcommand=self.update_menu_state)
         self["menu"] = self.menu_bar
         self.create_file_menu()
         self.create_edit_menu()
