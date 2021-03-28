@@ -478,6 +478,22 @@ class GUI(tk.Tk):
             except tk.TclError:
                 pass
 
+    def make_title(self, title: str) -> None:
+        """
+        Make the title's label and entry box.
+
+        :title: The title of the project.
+        :return: None.
+        """
+        self.title_frame = ttk.Frame(master=self)
+        self.title_frame.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.title_label = ttk.Label(master=self.title_frame, text="Project title: ")
+        self.title_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.title_var = tk.StringVar(value=title)
+        self.title_entry = EntryWithRightClick(master=self.title_frame, width=30, textvariable=self.title_var)
+        self.title_entry.initiate_right_click_menu()
+        self.title_entry.grid(row=0, column=1, padx=1, pady=1, sticky=tk.NW)
+
     def update_main_gui(self) -> None:
         """
         Update the main GUI.
@@ -488,12 +504,23 @@ class GUI(tk.Tk):
         logger.debug("Updating main GUI...")
         self.destroy_all_children(widget=self.main_frame)
         if self.cpypmconfig_path is None:
-            tk.Label(
+            ttk.Label(
                 master=self.main_frame,
                 text="No project is open! Use the file menu to create\na new project or open an existing project!"
             ).grid(row=0, column=0, sticky=tk.NW)
         else:
-            pass
+            logger.debug(f"Parsing {repr(self.cpypmconfig_path)}")
+            self.cpypmconfig = json.loads(self.cpypmconfig_path.read_text())
+            # TODO: Show:
+            #  - [✔] Title
+            #  - [ ] Description
+            #  - [ ] A listbox of all file/directories to sync.
+            #  - [ ] A button to add file when nothing selected in listbox and open dialog to select file
+            #  - [ ] A button to add whole directory when nothing selected in listbox and open dialog to select directory
+            #  - [ ] A button to remove when something is selected in listbox and confirm too
+            #  - [ ] Button to save all changes to .cpypmconfig which pops up un-closable dialog saying saving..
+            #  - [ ] Huge button to sync files which pops up un-closable dialog with status bar and label saying syncing...
+            self.make_title(self.cpypmconfig["project_name"])
 
     def make_main_gui(self) -> None:
         """
