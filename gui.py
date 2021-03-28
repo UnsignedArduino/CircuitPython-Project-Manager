@@ -486,13 +486,29 @@ class GUI(tk.Tk):
         :return: None.
         """
         self.title_frame = ttk.Frame(master=self)
-        self.title_frame.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.title_frame.grid(row=0, column=0, padx=1, pady=0, sticky=tk.NW)
         self.title_label = ttk.Label(master=self.title_frame, text="Project title: ")
         self.title_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
         self.title_var = tk.StringVar(value=title)
-        self.title_entry = EntryWithRightClick(master=self.title_frame, width=30, textvariable=self.title_var)
+        self.title_entry = EntryWithRightClick(master=self.title_frame, width=32, textvariable=self.title_var)
         self.title_entry.initiate_right_click_menu()
         self.title_entry.grid(row=0, column=1, padx=1, pady=1, sticky=tk.NW)
+
+    def make_description(self, description: str) -> None:
+        """
+        Make the description's labels and text box.
+
+        :param description: The description of the project.
+        :return: None.
+        """
+        self.description_frame = ttk.Frame(master=self)
+        self.description_frame.grid(row=1, column=0, padx=1, pady=0, sticky=tk.NW)
+        self.description_label = ttk.Label(master=self.description_frame, text="Project description: ")
+        self.description_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.description_text = TextWithRightClick(master=self.description_frame, width=33, height=7)
+        self.description_text.initiate_right_click_menu()
+        self.description_text.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.description_text.insert("1.0", description)
 
     def update_main_gui(self) -> None:
         """
@@ -513,14 +529,15 @@ class GUI(tk.Tk):
             self.cpypmconfig = json.loads(self.cpypmconfig_path.read_text())
             # TODO: Show:
             #  - [✔] Title
-            #  - [ ] Description
+            #  - [✔] Description
             #  - [ ] A listbox of all file/directories to sync.
             #  - [ ] A button to add file when nothing selected in listbox and open dialog to select file
-            #  - [ ] A button to add whole directory when nothing selected in listbox and open dialog to select directory
+            #  - [ ] A button to add directory when nothing selected in listbox and open dialog to select directory
             #  - [ ] A button to remove when something is selected in listbox and confirm too
             #  - [ ] Button to save all changes to .cpypmconfig which pops up un-closable dialog saying saving..
-            #  - [ ] Huge button to sync files which pops up un-closable dialog with status bar and label saying syncing...
+            #  - [ ] Button to sync files which pops up un-closable dialog with status bar and label saying syncing...
             self.make_title(self.cpypmconfig["project_name"])
+            self.make_description(self.cpypmconfig["description"])
 
     def make_main_gui(self) -> None:
         """
