@@ -488,7 +488,7 @@ class GUI(tk.Tk):
         :return: None.
         """
         self.title_frame = ttk.Frame(master=self)
-        self.title_frame.grid(row=0, column=0, padx=1, pady=0, sticky=tk.NW)
+        self.title_frame.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
         self.title_label = ttk.Label(master=self.title_frame, text="Project title: ")
         self.title_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
         self.title_var = tk.StringVar(value=title)
@@ -504,13 +504,40 @@ class GUI(tk.Tk):
         :return: None.
         """
         self.description_frame = ttk.Frame(master=self)
-        self.description_frame.grid(row=1, column=0, padx=1, pady=0, sticky=tk.NW)
+        self.description_frame.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
         self.description_label = ttk.Label(master=self.description_frame, text="Project description: ")
         self.description_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
         self.description_text = TextWithRightClick(master=self.description_frame, width=33, height=7)
         self.description_text.initiate_right_click_menu()
         self.description_text.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
         self.description_text.insert("1.0", description)
+
+    def make_drive_selector(self, drive: Path) -> None:
+        """
+        Make the drive selector.
+
+        :drive: A pathlib.Path to the drive.
+        :return: None.
+        """
+        self.drive_selector_frame = ttk.Frame(master=self)
+        self.drive_selector_frame.grid(row=2, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.drive_selector_label = ttk.Label(master=self.drive_selector_frame, text="Drive: ")
+        self.drive_selector_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.drive_selector_var = tk.StringVar()
+        if drive is not None:
+            self.drive_selector_var.set(str(drive))
+        self.drive_selector_combobox = ComboboxWithRightClick(master=self.drive_selector_frame, width=13, textvariable=self.drive_selector_var)
+        self.drive_selector_combobox.initiate_right_click_menu()
+        self.drive_selector_combobox.grid(row=0, column=1, padx=1, pady=1, sticky=tk.NW)
+        # TODO: Bind update drives function to refresh button
+        self.drive_selector_refresh_btn = ttk.Button(master=self.drive_selector_frame, text="↻", width=2, command=None)
+        self.drive_selector_refresh_btn.grid(row=0, column=2, padx=1, pady=1, sticky=tk.NW)
+        self.drive_selector_show_all_var = tk.BooleanVar(value=False)
+        # TODO: Bind update drives function to command
+        self.drive_selector_show_all_checkbtn = ttk.Checkbutton(master=self.drive_selector_frame, text="Show all drives?",
+                                                                variable=self.drive_selector_show_all_var, command=None)
+        self.drive_selector_show_all_checkbtn.grid(row=0, column=3, padx=1, pady=1, sticky=tk.NW)
+        # TODO: Update all drives here
 
     def update_main_gui(self) -> None:
         """
@@ -532,6 +559,7 @@ class GUI(tk.Tk):
             # TODO: Show:
             #  - [✔] Title
             #  - [✔] Description
+            #  - [✔] A combo box to select a drive to sync to
             #  - [ ] A listbox of all file/directories to sync.
             #  - [ ] A button to add file when nothing selected in listbox and open dialog to select file
             #  - [ ] A button to add directory when nothing selected in listbox and open dialog to select directory
@@ -540,6 +568,7 @@ class GUI(tk.Tk):
             #  - [ ] Button to sync files which pops up un-closable dialog with status bar and label saying syncing...
             self.make_title(self.cpypmconfig["project_name"])
             self.make_description(self.cpypmconfig["description"])
+            self.make_drive_selector(self.cpypmconfig["sync_location"])
 
     def make_main_gui(self) -> None:
         """
