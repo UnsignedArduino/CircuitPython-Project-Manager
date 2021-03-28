@@ -129,6 +129,8 @@ class GUI(tk.Tk):
 
         :return: None.
         """
+        if not self.load_key("unix_drive_mount_point"):
+            self.save_key("unix_drive_mount_point", "/media")
 
     def open_project(self) -> None:
         """
@@ -425,6 +427,8 @@ class GUI(tk.Tk):
         # TODO: Implement opening the project on GitHub
         self.help_menu.add_command(label="Open project on GitHub", state=tk.DISABLED)
         self.help_menu.add_separator()
+        # TODO: Implement opening the config
+        self.help_menu.add_command(label="Open configuration", state=tk.DISABLED)
         # TODO: Implement opening the logs
         self.help_menu.add_command(label="Open logs", state=tk.DISABLED)
 
@@ -512,6 +516,14 @@ class GUI(tk.Tk):
         self.description_text.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
         self.description_text.insert("1.0", description)
 
+    def update_drives(self) -> None:
+        """
+        Update all the drives connected.
+
+        :return: None.
+        """
+        # TODO: Actually get to work
+
     def make_drive_selector(self, drive: Path) -> None:
         """
         Make the drive selector.
@@ -529,15 +541,13 @@ class GUI(tk.Tk):
         self.drive_selector_combobox = ComboboxWithRightClick(master=self.drive_selector_frame, width=13, textvariable=self.drive_selector_var)
         self.drive_selector_combobox.initiate_right_click_menu()
         self.drive_selector_combobox.grid(row=0, column=1, padx=1, pady=1, sticky=tk.NW)
-        # TODO: Bind update drives function to refresh button
-        self.drive_selector_refresh_btn = ttk.Button(master=self.drive_selector_frame, text="↻", width=2, command=None)
+        self.drive_selector_refresh_btn = ttk.Button(master=self.drive_selector_frame, text="↻", width=2, command=self.update_drives)
         self.drive_selector_refresh_btn.grid(row=0, column=2, padx=1, pady=1, sticky=tk.NW)
         self.drive_selector_show_all_var = tk.BooleanVar(value=False)
-        # TODO: Bind update drives function to command
         self.drive_selector_show_all_checkbtn = ttk.Checkbutton(master=self.drive_selector_frame, text="Show all drives?",
-                                                                variable=self.drive_selector_show_all_var, command=None)
+                                                                variable=self.drive_selector_show_all_var, command=self.update_drives)
         self.drive_selector_show_all_checkbtn.grid(row=0, column=3, padx=1, pady=1, sticky=tk.NW)
-        # TODO: Update all drives here
+        self.update_drives()
 
     def update_main_gui(self) -> None:
         """
