@@ -451,10 +451,8 @@ class GUI(tk.Tk):
         # TODO: Implement opening the project on GitHub
         self.help_menu.add_command(label="Open project on GitHub", state=tk.DISABLED)
         self.help_menu.add_separator()
-        # TODO: Implement opening the config
-        self.help_menu.add_command(label="Open configuration", state=tk.DISABLED)
-        # TODO: Implement opening the logs
-        self.help_menu.add_command(label="Open logs", state=tk.DISABLED)
+        self.help_menu.add_command(label="Open configuration", command=lambda: open_application(str(self.config_path)))
+        self.help_menu.add_command(label="Open logs", command=lambda: open_application(str(Path.cwd() / "log.log")))
 
     def update_menu_state(self) -> None:
         """
