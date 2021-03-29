@@ -610,10 +610,12 @@ class GUI(tk.Tk):
         self.to_sync_label = ttk.Label(master=self.to_sync_frame, text="Files and directories to sync: ")
         self.to_sync_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
         self.to_sync_var = tk.StringVar(value=to_sync)
-        # TODO: Add scrollbar
         self.to_sync_listbox = ListboxWithRightClick(master=self.to_sync_frame, height=10, width=25, listvariable=self.to_sync_var)
         self.to_sync_listbox.initiate_right_click_menu(disable=["Copy", "Cut", "Paste", "Delete", "Select all"])
         self.to_sync_listbox.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.to_sync_scrollbar = ttk.Scrollbar(master=self.to_sync_frame, command=self.to_sync_listbox.yview)
+        self.to_sync_scrollbar.grid(row=1, column=1, padx=0, pady=1, sticky=tk.NSEW)
+        self.to_sync_listbox.config(yscrollcommand=self.to_sync_scrollbar.set)
 
     def update_main_gui(self) -> None:
         """
@@ -636,7 +638,7 @@ class GUI(tk.Tk):
             #  - [✔] Title
             #  - [✔] Description
             #  - [✔] A combo box to select a drive to sync to
-            #  - [ ] A listbox of all file/directories to sync.
+            #  - [✔] A listbox of all file/directories to sync.
             #  - [ ] A button to add file when nothing selected in listbox and open dialog to select file
             #  - [ ] A button to add directory when nothing selected in listbox and open dialog to select directory
             #  - [ ] A button to remove when something is selected in listbox and confirm too

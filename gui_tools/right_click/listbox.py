@@ -26,7 +26,7 @@ logger = create_logger(name=__name__, level=logging.DEBUG)
 
 class ListboxWithRightClick(tk.Listbox):
     """
-    A ttk.Listbox, but with a right click!
+    A tk.Listbox, but with a right click!
     """
     def __init__(self, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
