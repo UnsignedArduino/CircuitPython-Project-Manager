@@ -277,15 +277,18 @@ class GUI(tk.Tk):
 
     def update_new_project_buttons(self) -> None:
         """
-        Update the new project buttons.
+        Update the new project buttons. Will reschedule itself automatically.
 
         :return: None.
         """
         try:
+            # TODO: Show in status why can't create new project
             enable = True
             if not self.project_title_var.get():
                 enable = False
             if not self.project_location_var.get() or not Path(self.project_location_var.get()).exists():
+                enable = False
+            if (Path(self.project_location_var.get()) / project.replace_sus_chars(self.project_title_var.get())).exists():
                 enable = False
             self.make_new_project_button.config(state=tk.NORMAL if enable else tk.DISABLED)
         except tk.TclError:
@@ -345,10 +348,18 @@ class GUI(tk.Tk):
         """
         self.disable_closing = True
         self.set_childrens_state(self.new_project_frame, False)
-        self.cpypmconfig_path = project.make_new_project(parent_directory=Path(self.project_location_var.get()),
-                                                         project_name=self.project_title_var.get(),
-                                                         project_description=self.project_description_text.get("1.0", tk.END),
-                                                         autogen_gitignore=self.project_autogen_var.get())
+        try:
+            self.cpypmconfig_path = project.make_new_project(parent_directory=Path(self.project_location_var.get()),
+                                                             project_name=self.project_title_var.get(),
+                                                             project_description=self.project_description_text.get("1.0", tk.END),
+                                                             autogen_gitignore=self.project_autogen_var.get())
+        except FileExistsError:
+            mbox.showerror("CircuitPython Project Manager: Error!",
+                           "A project already exists under the same name!\n"
+                           "Please try creating a project with a different name or try creating it somewhere else!"
+                           "\n\n" + (traceback.format_exc() if self.show_traceback() else ""))
+            self.disable_closing = False
+            return
         self.update_main_gui()
         self.disable_closing = False
         self.dismiss_dialog(self.new_project_window)
