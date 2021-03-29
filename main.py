@@ -18,6 +18,7 @@ No functions!
 # TODO: Make public on GitHub
 # TODO: Add README.md
 # TODO: Make binaries like in CPY Bundle Manager
+# TODO: Can pass in path to .cpypmconfig and open directly into that
 
 import gui
 from pathlib import Path

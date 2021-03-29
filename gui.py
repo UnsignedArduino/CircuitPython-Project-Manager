@@ -584,13 +584,13 @@ class GUI(tk.Tk):
         :return: None.
         """
         self.drive_selector_frame = ttk.Frame(master=self.main_frame)
-        self.drive_selector_frame.grid(row=2, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.drive_selector_frame.grid(row=2, column=0, columnspan=4, padx=1, pady=1, sticky=tk.NW)
         self.drive_selector_label = ttk.Label(master=self.drive_selector_frame, text="Drive: ")
         self.drive_selector_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
         self.drive_selector_var = tk.StringVar()
         if drive is not None:
             self.drive_selector_var.set(str(drive))
-        self.drive_selector_combobox = ComboboxWithRightClick(master=self.drive_selector_frame, width=10, textvariable=self.drive_selector_var)
+        self.drive_selector_combobox = ComboboxWithRightClick(master=self.drive_selector_frame, width=48, textvariable=self.drive_selector_var)
         self.drive_selector_combobox.initiate_right_click_menu()
         self.drive_selector_combobox.grid(row=0, column=1, padx=1, pady=1, sticky=tk.NW)
         self.drive_selector_refresh_btn = ttk.Button(master=self.drive_selector_frame, text="↻", width=2, command=self.update_drives)
