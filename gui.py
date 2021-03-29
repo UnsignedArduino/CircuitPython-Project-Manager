@@ -499,6 +499,10 @@ class GUI(tk.Tk):
 
         :return: None.
         """
+        # TODO: Add underline for each menu option -
+        #  https://tkdocs.com/tutorial/menus.html#maincontent:~:text=Underline,-All
+        # TODO: Do accelerator keys -
+        #  https://tkdocs.com/tutorial/menus.html#maincontent:~:text=components.-,Accelerator%20Keys
         self.option_add("*tearOff", tk.FALSE)
         self.menu_bar = tk.Menu(self, postcommand=self.update_menu_state)
         self["menu"] = self.menu_bar
@@ -608,14 +612,45 @@ class GUI(tk.Tk):
         self.to_sync_frame = ttk.Frame(master=self.main_frame)
         self.to_sync_frame.grid(row=0, column=1, rowspan=2, padx=1, pady=1, sticky=tk.NW)
         self.to_sync_label = ttk.Label(master=self.to_sync_frame, text="Files and directories to sync: ")
-        self.to_sync_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.to_sync_label.grid(row=0, column=0, columnspan=3, padx=1, pady=1, sticky=tk.NW)
         self.to_sync_var = tk.StringVar(value=to_sync)
-        self.to_sync_listbox = ListboxWithRightClick(master=self.to_sync_frame, height=10, width=25, listvariable=self.to_sync_var)
+        self.to_sync_listbox = ListboxWithRightClick(master=self.to_sync_frame, height=10, width=20, listvariable=self.to_sync_var)
+        # TODO: Able to select something, right click, and delete it
+        # TODO: Able to right click on listbox and add file/directory
         self.to_sync_listbox.initiate_right_click_menu(disable=["Copy", "Cut", "Paste", "Delete", "Select all"])
         self.to_sync_listbox.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
         self.to_sync_scrollbar = ttk.Scrollbar(master=self.to_sync_frame, command=self.to_sync_listbox.yview)
         self.to_sync_scrollbar.grid(row=1, column=1, padx=0, pady=1, sticky=tk.NSEW)
         self.to_sync_listbox.config(yscrollcommand=self.to_sync_scrollbar.set)
+
+    def update_file_sync_buttons(self) -> None:
+        """
+        Update the file sync buttons.
+
+        :return: None.
+        """
+        try:
+            self.to_sync_remove_btn.config(state=tk.NORMAL if len(self.to_sync_listbox.curselection()) > 0 else tk.DISABLED)
+        except tk.TclError:
+            pass
+        else:
+            self.after(ms=100, func=self.update_file_sync_buttons)
+
+    def make_file_sync_buttons(self) -> None:
+        """
+        Create the buttons next ot the listbox that holds the files and directories to sync.
+
+        :return: None.
+        """
+        self.to_sync_btns_frame = ttk.Frame(master=self.to_sync_frame)
+        self.to_sync_btns_frame.grid(row=1, column=2, padx=1, pady=1, sticky=tk.NW)
+        self.to_sync_add_file_btn = ttk.Button(master=self.to_sync_btns_frame, text="Add file", width=12, command=None)
+        self.to_sync_add_file_btn.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.to_sync_add_directory_btn = ttk.Button(master=self.to_sync_btns_frame, text="Add directory", command=None)
+        self.to_sync_add_directory_btn.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.to_sync_remove_btn = ttk.Button(master=self.to_sync_btns_frame, text="Remove", width=12, command=None)
+        self.to_sync_remove_btn.grid(row=2, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.update_file_sync_buttons()
 
     def update_main_gui(self) -> None:
         """
@@ -639,9 +674,9 @@ class GUI(tk.Tk):
             #  - [✔] Description
             #  - [✔] A combo box to select a drive to sync to
             #  - [✔] A listbox of all file/directories to sync.
-            #  - [ ] A button to add file when nothing selected in listbox and open dialog to select file
-            #  - [ ] A button to add directory when nothing selected in listbox and open dialog to select directory
-            #  - [ ] A button to remove when something is selected in listbox and confirm too
+            #  - [✔] A button to add file when nothing selected in listbox and open dialog to select file
+            #  - [✔] A button to add directory when nothing selected in listbox and open dialog to select directory
+            #  - [✔] A button to remove when something is selected in listbox and confirm too
             #  - [ ] Button to save all changes to .cpypmconfig which disables everything until finished saved
             #  - [ ] Button to discard and reload all changes to .cpypmconfig which
             #  - [ ] Button to sync files which pops up un-closable dialog with status bar and label saying syncing...
@@ -649,6 +684,7 @@ class GUI(tk.Tk):
             self.make_description(self.cpypmconfig["description"])
             self.make_drive_selector(self.cpypmconfig["sync_location"])
             self.make_file_sync_listbox(self.cpypmconfig["files_to_sync"], Path(self.cpypmconfig["project_root"]))
+            self.make_file_sync_buttons()
 
     def make_main_gui(self) -> None:
         """
