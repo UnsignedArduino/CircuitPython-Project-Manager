@@ -457,13 +457,13 @@ class GUI(tk.Tk):
         """
         self.help_menu = tk.Menu(self.menu_bar)
         self.menu_bar.add_cascade(menu=self.help_menu, label="Help")
+        self.help_menu.add_command(label="Open configuration", command=lambda: open_application(str(self.config_path)))
+        self.help_menu.add_command(label="Open logs", command=lambda: open_application(str(Path.cwd() / "log.log")))
+        self.help_menu.add_separator()
         # TODO: Implement opening the README.md
         self.help_menu.add_command(label="Open README.md", state=tk.DISABLED)
         # TODO: Implement opening the project on GitHub
         self.help_menu.add_command(label="Open project on GitHub", state=tk.DISABLED)
-        self.help_menu.add_separator()
-        self.help_menu.add_command(label="Open configuration", command=lambda: open_application(str(self.config_path)))
-        self.help_menu.add_command(label="Open logs", command=lambda: open_application(str(Path.cwd() / "log.log")))
 
     def update_menu_state(self) -> None:
         """
