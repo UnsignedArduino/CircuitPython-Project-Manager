@@ -535,7 +535,7 @@ class GUI(tk.Tk):
         self.title_label = ttk.Label(master=self.title_frame, text="Project title: ")
         self.title_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
         self.title_var = tk.StringVar(value=title)
-        self.title_entry = EntryWithRightClick(master=self.title_frame, width=32, textvariable=self.title_var)
+        self.title_entry = EntryWithRightClick(master=self.title_frame, width=29, textvariable=self.title_var)
         self.title_entry.initiate_right_click_menu()
         self.title_entry.grid(row=0, column=1, padx=1, pady=1, sticky=tk.NW)
 
@@ -550,7 +550,7 @@ class GUI(tk.Tk):
         self.description_frame.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
         self.description_label = ttk.Label(master=self.description_frame, text="Project description: ")
         self.description_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
-        self.description_text = TextWithRightClick(master=self.description_frame, width=33, height=7)
+        self.description_text = TextWithRightClick(master=self.description_frame, width=31, height=8, wrap=tk.WORD)
         self.description_text.initiate_right_click_menu()
         self.description_text.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
         self.description_text.insert("1.0", description)
@@ -586,7 +586,7 @@ class GUI(tk.Tk):
         self.drive_selector_var = tk.StringVar()
         if drive is not None:
             self.drive_selector_var.set(str(drive))
-        self.drive_selector_combobox = ComboboxWithRightClick(master=self.drive_selector_frame, width=13, textvariable=self.drive_selector_var)
+        self.drive_selector_combobox = ComboboxWithRightClick(master=self.drive_selector_frame, width=10, textvariable=self.drive_selector_var)
         self.drive_selector_combobox.initiate_right_click_menu()
         self.drive_selector_combobox.grid(row=0, column=1, padx=1, pady=1, sticky=tk.NW)
         self.drive_selector_refresh_btn = ttk.Button(master=self.drive_selector_frame, text="↻", width=2, command=self.update_drives)
@@ -596,6 +596,23 @@ class GUI(tk.Tk):
                                                                 variable=self.drive_selector_show_all_var, command=self.update_drives)
         self.drive_selector_show_all_checkbtn.grid(row=0, column=3, padx=1, pady=1, sticky=tk.NW)
         self.update_drives()
+
+    def make_file_sync_listbox(self, to_sync: list[Path], project_root: Path) -> None:
+        """
+        Create the listbox that holds the files and directories to sync.
+
+        :param to_sync: A list of pathlib.Path objects of stuff to sync.
+        :param project_root: A pathlib.Path of the project root.
+        :return: None.
+        """
+        self.to_sync_frame = ttk.Frame(master=self.main_frame)
+        self.to_sync_frame.grid(row=0, column=1, rowspan=2, padx=1, pady=1, sticky=tk.NW)
+        self.to_sync_label = ttk.Label(master=self.to_sync_frame, text="Files and directories to sync: ")
+        self.to_sync_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.to_sync_var = tk.StringVar()
+        self.to_sync_listbox = ListboxWithRightClick(master=self.to_sync_frame, height=10, width=25, listvariable=self.to_sync_var)
+        self.to_sync_listbox.initiate_right_click_menu(disable=["Copy", "Cut", "Paste", "Delete", "Select all"])
+        self.to_sync_listbox.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
 
     def update_main_gui(self) -> None:
         """
@@ -622,11 +639,14 @@ class GUI(tk.Tk):
             #  - [ ] A button to add file when nothing selected in listbox and open dialog to select file
             #  - [ ] A button to add directory when nothing selected in listbox and open dialog to select directory
             #  - [ ] A button to remove when something is selected in listbox and confirm too
-            #  - [ ] Button to save all changes to .cpypmconfig which pops up un-closable dialog saying saving..
+            #  - [ ] Button to save all changes to .cpypmconfig which disables everything until finished saved
+            #  - [ ] Button to discard and reload all changes to .cpypmconfig which
             #  - [ ] Button to sync files which pops up un-closable dialog with status bar and label saying syncing...
             self.make_title(self.cpypmconfig["project_name"])
             self.make_description(self.cpypmconfig["description"])
             self.make_drive_selector(self.cpypmconfig["sync_location"])
+            self.make_file_sync_listbox([Path(p) for p in self.cpypmconfig["files_to_sync"]],
+                                        Path(self.cpypmconfig["project_root"]))
 
     def make_main_gui(self) -> None:
         """
