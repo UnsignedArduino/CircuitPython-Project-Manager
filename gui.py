@@ -123,12 +123,25 @@ class GUI(tk.Tk):
         logger.debug(f"{repr(new)} did " + ("" if new.isdigit() and len(new) <= 3 else "not ") + "pass validation!")
         return new.isdigit() and len(new) <= 3
 
+    def show_traceback(self) -> bool:
+        """
+        Whether to show the traceback or not depending on the config file.
+
+        :return: None.
+        """
+        try:
+            return bool(self.load_key("show_traceback_in_error_messages"))
+        except AttributeError:
+            return False
+
     def create_config(self) -> None:
         """
         Re-create the config keys if they do not exist.
 
         :return: None.
         """
+        if not self.load_key("show_traceback_in_error_messages"):
+            self.save_key("show_traceback_in_error_messages", False)
         if not self.load_key("unix_drive_mount_point"):
             self.save_key("unix_drive_mount_point", "/media")
 
@@ -522,7 +535,20 @@ class GUI(tk.Tk):
 
         :return: None.
         """
-        # TODO: Actually get to work
+        try:
+            connected_drives = drives.list_connected_drives(not self.drive_selector_show_all_var.get(),
+                                                            Path(self.load_key("unix_drive_mount_point")))
+        except OSError:
+            logger.error(f"Could not get connected drives!\n\n{traceback.format_exc()}")
+            mbox.showerror("CircuitPython Project Manager: ERROR!",
+                           "Oh no! An error occurred while getting a list of connected drives!\n\n" + (traceback.format_exc() if self.show_traceback() else ""))
+            return
+        logger.debug(f"Connected drives: {repr(connected_drives)}")
+        self.drive_selector_combobox["values"] = connected_drives
+        if not self.drive_selector_combobox.get() and len(connected_drives) > 0:
+            selected_drive = connected_drives[0]
+            logger.debug(f"Setting selected drive to {repr(selected_drive)}!")
+            self.drive_selector_combobox.set(selected_drive)
 
     def make_drive_selector(self, drive: Path) -> None:
         """
