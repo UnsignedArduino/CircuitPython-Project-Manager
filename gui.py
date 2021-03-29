@@ -664,6 +664,7 @@ class GUI(tk.Tk):
             else:
                 self.cpypmconfig["files_to_sync"].append(str(relative_path))
                 self.to_sync_var.set(self.cpypmconfig["files_to_sync"])
+                self.to_sync_listbox.see(len(self.cpypmconfig["files_to_sync"]) - 1)
         else:
             logger.debug("User canceled adding file to sync!")
 
@@ -695,8 +696,25 @@ class GUI(tk.Tk):
             else:
                 self.cpypmconfig["files_to_sync"].append(str(relative_path))
                 self.to_sync_var.set(self.cpypmconfig["files_to_sync"])
+                self.to_sync_listbox.see(len(self.cpypmconfig["files_to_sync"]) - 1)
         else:
             logger.debug("User canceled adding directory to sync!")
+
+    def remove_thing_to_sync(self) -> None:
+        """
+        Removes the select item from the sync list.
+
+        :return: None.
+        """
+        logger.debug("Asking user to confirm removal...")
+        item = self.to_sync_listbox.get(self.to_sync_listbox.curselection())
+        if mbox.askokcancel("CircuitPython Project Manager: Confirm",
+                           f"Are you sure you want to remove {repr(item)} from being synced?"):
+            logger.debug(f"Removing item {repr(item)} (at index {repr(self.to_sync_listbox.curselection()[0])}")
+            self.cpypmconfig["files_to_sync"].pop(self.to_sync_listbox.curselection()[0])
+            self.to_sync_var.set(self.cpypmconfig["files_to_sync"])
+        else:
+            logger.debug(f"User canceled removal!")
 
     def make_file_sync_buttons(self) -> None:
         """
@@ -712,7 +730,8 @@ class GUI(tk.Tk):
         self.to_sync_add_directory_btn = ttk.Button(master=self.to_sync_btns_frame, text="Add directory",
                                                     command=self.add_directory_to_sync)
         self.to_sync_add_directory_btn.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
-        self.to_sync_remove_btn = ttk.Button(master=self.to_sync_btns_frame, text="Remove", width=12, command=None)
+        self.to_sync_remove_btn = ttk.Button(master=self.to_sync_btns_frame, text="Remove", width=12,
+                                             command=self.remove_thing_to_sync)
         self.to_sync_remove_btn.grid(row=2, column=0, padx=1, pady=1, sticky=tk.NW)
         self.update_file_sync_buttons()
 
