@@ -274,6 +274,9 @@ class GUI(tk.Tk):
         self.project_description_text = TextWithRightClick(master=self.project_details_frame, width=60, height=10)
         self.project_description_text.initiate_right_click_menu()
         self.project_description_text.grid(row=2, column=0, columnspan=3, padx=1, pady=1, sticky=tk.NW)
+        self.project_status = ttk.Label(master=self.project_details_frame)
+        self.project_status.stop = False
+        self.project_status.grid(row=3, column=0, columnspan=3, padx=1, pady=1, sticky=tk.NW)
 
     def update_new_project_buttons(self) -> None:
         """
@@ -281,15 +284,22 @@ class GUI(tk.Tk):
 
         :return: None.
         """
+        if self.project_status.stop:
+            return
         try:
             # TODO: Show in status why can't create new project
-            enable = True
             if not self.project_title_var.get():
                 enable = False
-            if not self.project_location_var.get() or not Path(self.project_location_var.get()).exists():
+                self.project_status.config(text="No title found!")
+            elif not self.project_location_var.get() or not Path(self.project_location_var.get()).exists():
                 enable = False
-            if (Path(self.project_location_var.get()) / project.replace_sus_chars(self.project_title_var.get())).exists():
+                self.project_status.config(text="The parent directory of the project does not exist!")
+            elif (Path(self.project_location_var.get()) / project.replace_sus_chars(self.project_title_var.get())).exists():
                 enable = False
+                self.project_status.config(text="A project under the same name already exists in that parent directory!")
+            else:
+                enable = True
+                self.project_status.config(text="All good!")
             self.make_new_project_button.config(state=tk.NORMAL if enable else tk.DISABLED)
         except tk.TclError:
             pass
@@ -346,6 +356,8 @@ class GUI(tk.Tk):
 
         :return: None.
         """
+        self.project_status.stop = True
+        self.project_status.config(text="Creating project...")
         self.disable_closing = True
         self.set_childrens_state(self.new_project_frame, False)
         try:
@@ -471,10 +483,15 @@ class GUI(tk.Tk):
                                       state=tk.DISABLED if self.cpypmconfig_path is None else tk.NORMAL)
         self.edit_menu.entryconfigure("Open .cpypmconfig file location",
                                       state=tk.DISABLED if self.cpypmconfig_path is None else tk.NORMAL)
-        if self.cpypmconfig_path is None or json.loads(self.cpypmconfig_path.read_text())["sync_location"] is None:
-            self.sync_menu.entryconfigure("Sync files", state=tk.DISABLED)
-        else:
-            self.sync_menu.entryconfigure("Sync files", state=tk.NORMAL)
+        try:
+            if self.cpypmconfig_path is None or json.loads(self.cpypmconfig_path.read_text())["sync_location"] is None:
+                self.sync_menu.entryconfigure("Sync files", state=tk.DISABLED)
+            else:
+                self.sync_menu.entryconfigure("Sync files", state=tk.NORMAL)
+        except FileNotFoundError:
+            self.close_project()
+            mbox.showerror("CircuitPython Project Manager: Error!",
+                           "Your project's .cpypmconfig file has been deleted by an external program, closing project!")
 
     def create_menu(self) -> None:
         """
