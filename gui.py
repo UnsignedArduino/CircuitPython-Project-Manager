@@ -597,11 +597,11 @@ class GUI(tk.Tk):
         self.drive_selector_show_all_checkbtn.grid(row=0, column=3, padx=1, pady=1, sticky=tk.NW)
         self.update_drives()
 
-    def make_file_sync_listbox(self, to_sync: list[Path], project_root: Path) -> None:
+    def make_file_sync_listbox(self, to_sync: list[str], project_root: Path) -> None:
         """
         Create the listbox that holds the files and directories to sync.
 
-        :param to_sync: A list of pathlib.Path objects of stuff to sync.
+        :param to_sync: A list of str objects of stuff to sync.
         :param project_root: A pathlib.Path of the project root.
         :return: None.
         """
@@ -609,7 +609,8 @@ class GUI(tk.Tk):
         self.to_sync_frame.grid(row=0, column=1, rowspan=2, padx=1, pady=1, sticky=tk.NW)
         self.to_sync_label = ttk.Label(master=self.to_sync_frame, text="Files and directories to sync: ")
         self.to_sync_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
-        self.to_sync_var = tk.StringVar()
+        self.to_sync_var = tk.StringVar(value=to_sync)
+        # TODO: Add scrollbar
         self.to_sync_listbox = ListboxWithRightClick(master=self.to_sync_frame, height=10, width=25, listvariable=self.to_sync_var)
         self.to_sync_listbox.initiate_right_click_menu(disable=["Copy", "Cut", "Paste", "Delete", "Select all"])
         self.to_sync_listbox.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
@@ -645,8 +646,7 @@ class GUI(tk.Tk):
             self.make_title(self.cpypmconfig["project_name"])
             self.make_description(self.cpypmconfig["description"])
             self.make_drive_selector(self.cpypmconfig["sync_location"])
-            self.make_file_sync_listbox([Path(p) for p in self.cpypmconfig["files_to_sync"]],
-                                        Path(self.cpypmconfig["project_root"]))
+            self.make_file_sync_listbox(self.cpypmconfig["files_to_sync"], Path(self.cpypmconfig["project_root"]))
 
     def make_main_gui(self) -> None:
         """
