@@ -492,7 +492,7 @@ class GUI(tk.Tk):
             logger.exception("Uh oh, an exception has occurred!")
             self.close_project()
             mbox.showerror("CircuitPython Project Manager: Error!",
-                           "Your project's .cpypmconfig file has been deleted by an external program, closing project!")
+                           "Your project's .cpypmconfig file cannot be accessed, closing project!")
 
     def create_menu(self) -> None:
         """
