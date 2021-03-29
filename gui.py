@@ -287,7 +287,6 @@ class GUI(tk.Tk):
         if self.project_status.stop:
             return
         try:
-            # TODO: Show in status why can't create new project
             if not self.project_title_var.get():
                 enable = False
                 self.project_status.config(text="No title found!")
