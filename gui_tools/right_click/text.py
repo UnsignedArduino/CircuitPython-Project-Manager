@@ -94,7 +94,7 @@ class TextWithRightClick(tk.Text):
             self.delete(tk.SEL_FIRST, tk.SEL_LAST)
         else:
             logger.debug(f"Deleting everything!")
-            self.delete(0, tk.END)
+            self.delete("1.0", END)
 
     def paste(self):
         """
