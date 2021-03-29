@@ -554,10 +554,6 @@ class GUI(tk.Tk):
             return
         logger.debug(f"Connected drives: {repr(connected_drives)}")
         self.drive_selector_combobox["values"] = connected_drives
-        if not self.drive_selector_combobox.get() and len(connected_drives) > 0:
-            selected_drive = connected_drives[0]
-            logger.debug(f"Setting selected drive to {repr(selected_drive)}!")
-            self.drive_selector_combobox.set(selected_drive)
 
     def make_drive_selector(self, drive: Path) -> None:
         """
