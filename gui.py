@@ -667,6 +667,37 @@ class GUI(tk.Tk):
         else:
             logger.debug("User canceled adding file to sync!")
 
+    def add_directory_to_sync(self) -> None:
+        """
+        Opens a file browser to select a directory to sync.
+
+        :return: None.
+        """
+        logger.debug("Opening file to sync...")
+        path = fd.askdirectory(initialdir=self.cpypmconfig["project_root"],
+                               title="CircuitPython Project Manager: Select a directory to sync")
+        if path:
+            path = Path(path)
+            logger.debug(f"Returned valid path! Path is {repr(path)}")
+            try:
+                relative_path = path.relative_to(Path(self.cpypmconfig["project_root"]))
+            except ValueError:
+                logger.warning(f"{repr(path)} is not in the project!")
+                mbox.showerror("CircuitPython Project Manager: Error",
+                               "That directory is not in the project!")
+                return
+            logger.debug(f"Relative path is {repr(relative_path)}")
+            logger.debug(f"Files and directories to sync: {repr(self.cpypmconfig['files_to_sync'])}")
+            if str(relative_path) in self.cpypmconfig["files_to_sync"]:
+                logger.warning(f"{repr(relative_path)} is already in {repr(self.cpypmconfig['files_to_sync'])}")
+                mbox.showwarning("CircuitPython Project Manager: Warning",
+                                 "That directory has already been added!")
+            else:
+                self.cpypmconfig["files_to_sync"].append(str(relative_path))
+                self.to_sync_var.set(self.cpypmconfig["files_to_sync"])
+        else:
+            logger.debug("User canceled adding directory to sync!")
+
     def make_file_sync_buttons(self) -> None:
         """
         Create the buttons next ot the listbox that holds the files and directories to sync.
@@ -678,7 +709,8 @@ class GUI(tk.Tk):
         self.to_sync_add_file_btn = ttk.Button(master=self.to_sync_btns_frame, text="Add file", width=12,
                                                command=self.add_file_to_sync)
         self.to_sync_add_file_btn.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
-        self.to_sync_add_directory_btn = ttk.Button(master=self.to_sync_btns_frame, text="Add directory", command=None)
+        self.to_sync_add_directory_btn = ttk.Button(master=self.to_sync_btns_frame, text="Add directory",
+                                                    command=self.add_directory_to_sync)
         self.to_sync_add_directory_btn.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
         self.to_sync_remove_btn = ttk.Button(master=self.to_sync_btns_frame, text="Remove", width=12, command=None)
         self.to_sync_remove_btn.grid(row=2, column=0, padx=1, pady=1, sticky=tk.NW)
