@@ -515,7 +515,7 @@ class GUI(tk.Tk):
         :title: The title of the project.
         :return: None.
         """
-        self.title_frame = ttk.Frame(master=self)
+        self.title_frame = ttk.Frame(master=self.main_frame)
         self.title_frame.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
         self.title_label = ttk.Label(master=self.title_frame, text="Project title: ")
         self.title_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
@@ -531,7 +531,7 @@ class GUI(tk.Tk):
         :param description: The description of the project.
         :return: None.
         """
-        self.description_frame = ttk.Frame(master=self)
+        self.description_frame = ttk.Frame(master=self.main_frame)
         self.description_frame.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
         self.description_label = ttk.Label(master=self.description_frame, text="Project description: ")
         self.description_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
@@ -568,7 +568,7 @@ class GUI(tk.Tk):
         :drive: A pathlib.Path to the drive.
         :return: None.
         """
-        self.drive_selector_frame = ttk.Frame(master=self)
+        self.drive_selector_frame = ttk.Frame(master=self.main_frame)
         self.drive_selector_frame.grid(row=2, column=0, padx=1, pady=1, sticky=tk.NW)
         self.drive_selector_label = ttk.Label(master=self.drive_selector_frame, text="Drive: ")
         self.drive_selector_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
