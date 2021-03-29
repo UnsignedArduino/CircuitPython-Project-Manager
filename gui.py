@@ -489,6 +489,7 @@ class GUI(tk.Tk):
             else:
                 self.sync_menu.entryconfigure("Sync files", state=tk.NORMAL)
         except FileNotFoundError:
+            logger.exception("Uh oh, an exception has occurred!")
             self.close_project()
             mbox.showerror("CircuitPython Project Manager: Error!",
                            "Your project's .cpypmconfig file has been deleted by an external program, closing project!")
@@ -590,7 +591,7 @@ class GUI(tk.Tk):
         self.drive_selector_combobox.initiate_right_click_menu()
         self.drive_selector_combobox.grid(row=0, column=1, padx=1, pady=1, sticky=tk.NW)
         self.drive_selector_refresh_btn = ttk.Button(master=self.drive_selector_frame, text="↻", width=2, command=self.update_drives)
-        self.drive_selector_refresh_btn.grid(row=0, column=2, padx=1, pady=1, sticky=tk.NW)
+        self.drive_selector_refresh_btn.grid(row=0, column=2, padx=1, pady=0, sticky=tk.NW)
         self.drive_selector_show_all_var = tk.BooleanVar(value=False)
         self.drive_selector_show_all_checkbtn = ttk.Checkbutton(master=self.drive_selector_frame, text="Show all drives?",
                                                                 variable=self.drive_selector_show_all_var, command=self.update_drives)
