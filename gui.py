@@ -145,6 +145,26 @@ class GUI(tk.Tk):
         if not self.load_key("unix_drive_mount_point"):
             self.save_key("unix_drive_mount_point", "/media")
 
+    def add_recent_project(self, path: Path) -> None:
+        """
+        Add a project to the recent category.
+
+        :param path: The path of the .cpypmconfig file.
+        :return: None.
+        """
+        self.save_key("last_dir_opened", str(path.parent.parent))
+        recent_projects = self.load_key("opened_recent")
+        if recent_projects is None:
+            recent_projects = []
+        if str(path) in recent_projects:
+            recent_projects.pop(recent_projects.index(str(path)))
+        recent_projects = [Path(p) for p in recent_projects]
+        while len(recent_projects) > 10:
+            recent_projects.pop()
+        recent_projects.insert(0, str(path))
+        self.save_key("opened_recent", [str(p) for p in recent_projects])
+        self.update_recent_projects()
+
     def open_project(self) -> None:
         """
         Open a project.
@@ -162,7 +182,7 @@ class GUI(tk.Tk):
             logger.debug(f"Returned valid path! Path is {repr(path)}")
             self.cpypmconfig_path = path
             self.update_main_gui()
-            self.save_key("last_dir_opened", str(path.parent.parent))
+            self.add_recent_project(path)
         else:
             logger.debug("User canceled opening project!")
 
@@ -380,6 +400,8 @@ class GUI(tk.Tk):
         self.update_main_gui()
         self.disable_closing = False
         self.dismiss_dialog(self.new_project_window)
+        self.add_recent_project(self.cpypmconfig_path)
+        self.update_recent_projects()
 
     def open_create_new_project(self) -> None:
         """
@@ -396,6 +418,22 @@ class GUI(tk.Tk):
         self.create_new_project_buttons()
         self.new_project_frame.wait_window()
 
+    def update_recent_projects(self) -> None:
+        """
+        Update the opened recent projects menu.
+
+        :return: None.
+        """
+        self.opened_recent_menu.delete(0, tk.END)
+        self.recent_projects = self.load_key("opened_recent")
+        if self.recent_projects is None:
+            self.recent_projects = []
+        self.recent_projects = [Path(p) for p in self.recent_projects]
+        for path in self.recent_projects:
+            self.opened_recent_menu.add_command(label=str(path), command=None)
+        if len(self.recent_projects) == 0:
+            self.opened_recent_menu.add_command(label="No recent projects!", state=tk.DISABLED)
+
     def create_file_menu(self) -> None:
         """
         Create the file menu.
@@ -407,6 +445,9 @@ class GUI(tk.Tk):
         self.file_menu.add_command(label="New...", command=self.open_create_new_project, underline=0)
         self.file_menu.add_command(label="Open...", command=self.open_project, underline=0)
         # TODO: Add open recent
+        self.opened_recent_menu = tk.Menu(self.file_menu)
+        self.file_menu.add_cascade(label="Open recent", menu=self.opened_recent_menu, underline=5)
+        self.update_recent_projects()
         self.file_menu.add_command(label="Close project", command=self.close_project, underline=0)
         self.file_menu.add_separator()
         self.file_menu.add_command(label="Exit", command=self.try_to_close, underline=0)
@@ -420,9 +461,9 @@ class GUI(tk.Tk):
         self.edit_menu = tk.Menu(self.menu_bar)
         self.menu_bar.add_cascade(menu=self.edit_menu, label="Edit", underline=0)
         self.edit_menu.add_command(label="Open .cpypmconfig",
-                                   command=lambda: open_application(self.cpypmconfig_path), underline=6)
+                                   command=lambda: open_application(str(self.cpypmconfig_path)), underline=6)
         self.edit_menu.add_command(label="Open .cpypmconfig file location",
-                                   command=lambda: open_application(self.cpypmconfig_path.parent), underline=23)
+                                   command=lambda: open_application(str(self.cpypmconfig_path.parent)), underline=23)
         self.edit_menu.add_separator()
         self.edit_menu.add_command(label="Save changes", command=self.save_modified, underline=0)
         self.edit_menu.add_command(label="Discard changes", command=self.discard_modified, underline=0)
@@ -914,6 +955,8 @@ class GUI(tk.Tk):
         self.create_config()
         self.create_menu()
         self.make_main_gui(cpypmconfig_path)
+        if cpypmconfig_path is not None:
+            self.add_recent_project(cpypmconfig_path)
 
     def run(self, cpypmconfig_path: Path = None) -> None:
         """
