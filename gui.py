@@ -493,7 +493,8 @@ class GUI(tk.Tk):
             logger.exception("Uh oh, an exception has occurred!")
             self.close_project()
             mbox.showerror("CircuitPython Project Manager: Error!",
-                           "Your project's .cpypmconfig file cannot be accessed, closing project!")
+                           "Your project's .cpypmconfig file cannot be accessed, closing project!"
+                           "\n\n" + (traceback.format_exc() if self.show_traceback() else ""))
 
     def create_menu(self) -> None:
         """
@@ -573,7 +574,8 @@ class GUI(tk.Tk):
         except OSError:
             logger.error(f"Could not get connected drives!\n\n{traceback.format_exc()}")
             mbox.showerror("CircuitPython Project Manager: ERROR!",
-                           "Oh no! An error occurred while getting a list of connected drives!\n\n" + (traceback.format_exc() if self.show_traceback() else ""))
+                           "Oh no! An error occurred while getting a list of connected drives!"
+                           "\n\n" + (traceback.format_exc() if self.show_traceback() else ""))
             return
         logger.debug(f"Connected drives: {repr(connected_drives)}")
         self.drive_selector_combobox["values"] = connected_drives
@@ -655,7 +657,8 @@ class GUI(tk.Tk):
             except ValueError:
                 logger.warning(f"{repr(path)} is not in the project!")
                 mbox.showerror("CircuitPython Project Manager: Error",
-                               "That file is not in the project!")
+                               "That file is not in the project!"
+                               "\n\n" + (traceback.format_exc() if self.show_traceback() else ""))
                 return
             logger.debug(f"Relative path is {repr(relative_path)}")
             logger.debug(f"Files and directories to sync: {repr(self.cpypmconfig['files_to_sync'])}")
@@ -687,7 +690,8 @@ class GUI(tk.Tk):
             except ValueError:
                 logger.warning(f"{repr(path)} is not in the project!")
                 mbox.showerror("CircuitPython Project Manager: Error",
-                               "That directory is not in the project!")
+                               "That directory is not in the project!"
+                               "\n\n" + (traceback.format_exc() if self.show_traceback() else ""))
                 return
             logger.debug(f"Relative path is {repr(relative_path)}")
             logger.debug(f"Files and directories to sync: {repr(self.cpypmconfig['files_to_sync'])}")
@@ -744,6 +748,7 @@ class GUI(tk.Tk):
         :return: None.
         """
         self.set_childrens_state(frame=self.main_frame, enabled=False)
+        self.disable_closing = True
         logger.debug(f"Saving .cpypmconfig to {repr(self.cpypmconfig_path)}")
         self.cpypmconfig["project_name"] = self.title_var.get()
         self.cpypmconfig["description"] = self.description_text.get("1.0", tk.END)
@@ -754,9 +759,11 @@ class GUI(tk.Tk):
             logger.exception("Uh oh, an exception has occurred!")
             self.close_project()
             mbox.showerror("CircuitPython Project Manager: Error!",
-                           "Your project's .cpypmconfig file cannot be accessed, closing project!")
+                           "Your project's .cpypmconfig file cannot be accessed, closing project!"
+                           "\n\n" + (traceback.format_exc() if self.show_traceback() else ""))
         else:
             self.after(ms=100, func=lambda: self.set_childrens_state(frame=self.main_frame, enabled=True))
+            self.disable_closing = False
 
     def discard_modified(self) -> None:
         """
@@ -775,7 +782,41 @@ class GUI(tk.Tk):
             logger.exception("Uh oh, an exception has occurred!")
             self.close_project()
             mbox.showerror("CircuitPython Project Manager: Error!",
-                           "Your project's .cpypmconfig file cannot be accessed, closing project!")
+                           "Your project's .cpypmconfig file cannot be accessed, closing project!"
+                           "\n\n" + (traceback.format_exc() if self.show_traceback() else ""))
+
+    def sync(self) -> None:
+        """
+        Sync the files - this will block.
+
+        :return: None.
+        """
+        try:
+            project.sync_project(self.cpypmconfig_path)
+        except ValueError:
+            logger.exception("Uh oh, an exception has occurred!")
+            mbox.showerror("CircuitPython Project Manager: Error!",
+                           "The sync location has not been set!"
+                           "\n\n" + (traceback.format_exc() if self.show_traceback() else ""))
+        except Exception as _:
+            mbox.showerror("CircuitPython Project Manager: Error!",
+                           "Uh oh! An unknown exception occurred!"
+                           "\n\n" + (traceback.format_exc() if self.show_traceback() else ""))
+        self.set_childrens_state(self.main_frame, True)
+        self.disable_closing = False
+
+    def start_sync_thread(self) -> None:
+        """
+        Start the sync files thread.
+
+        :return: None.
+        """
+        # TODO: Pop up unclosable dialog saying syncing...
+        self.set_childrens_state(self.main_frame, False)
+        self.disable_closing = True
+        thread = Thread(target=self.sync, args=(), daemon=True)
+        logger.debug(f"Starting sync thread {repr(thread)}")
+        thread.start()
 
     def make_save_and_sync_buttons(self) -> None:
         """
@@ -787,7 +828,8 @@ class GUI(tk.Tk):
         self.save_config_btn.grid(row=4, column=0, padx=1, pady=1, sticky=tk.NW)
         self.discard_config_btn = ttk.Button(master=self.right_frame, text="Discard", width=12, command=self.discard_modified)
         self.discard_config_btn.grid(row=5, column=0, padx=1, pady=1, sticky=tk.NW)
-        self.sync_files_btn = ttk.Button(master=self.right_frame, text="Sync", width=12, command=None)
+        # TODO: Disable syncing if drive not set
+        self.sync_files_btn = ttk.Button(master=self.right_frame, text="Sync", width=12, command=self.start_sync_thread)
         self.sync_files_btn.grid(row=6, column=0, padx=1, pady=1, sticky=tk.NW)
 
     def update_main_gui(self) -> None:
@@ -807,17 +849,6 @@ class GUI(tk.Tk):
         else:
             logger.debug(f"Parsing {repr(self.cpypmconfig_path)}")
             self.cpypmconfig = json.loads(self.cpypmconfig_path.read_text())
-            # TODO: Show:
-            #  - [✔] Title
-            #  - [✔] Description
-            #  - [✔] A combo box to select a drive to sync to
-            #  - [✔] A listbox of all file/directories to sync.
-            #  - [✔] A button to add file when nothing selected in listbox and open dialog to select file
-            #  - [✔] A button to add directory when nothing selected in listbox and open dialog to select directory
-            #  - [✔] A button to remove when something is selected in listbox and confirm too
-            #  - [✔] Button to save all changes to .cpypmconfig which disables everything until finished saved
-            #  - [✔] Button to discard and reload all changes to .cpypmconfig which
-            #  - [ ] Button to sync files which pops up un-closable dialog with status bar and label saying syncing...
             self.make_title(self.cpypmconfig["project_name"])
             self.make_description(self.cpypmconfig["description"])
             self.make_drive_selector(self.cpypmconfig["sync_location"])
