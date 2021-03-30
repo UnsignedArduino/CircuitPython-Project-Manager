@@ -152,7 +152,9 @@ class GUI(tk.Tk):
         :return: None.
         """
         logger.debug("Opening project...")
-        path = fd.askopenfilename(initialdir=str(Path.cwd()),
+        previous_path = self.load_key("last_dir_opened")
+        logger.debug(f"Previous path opened is {repr(previous_path)}")
+        path = fd.askopenfilename(initialdir=str(Path.cwd()) if previous_path is None else previous_path,
                                   title="CircuitPython Project Manager: Select a .cpypmconfig file",
                                   filetypes=((".cpypmconfig files", "*.cpypmconfig"), ("All files", "*.*")))
         if path:
@@ -160,6 +162,7 @@ class GUI(tk.Tk):
             logger.debug(f"Returned valid path! Path is {repr(path)}")
             self.cpypmconfig_path = path
             self.update_main_gui()
+            self.save_key("last_dir_opened", str(path.parent.parent))
         else:
             logger.debug("User canceled opening project!")
 
@@ -223,12 +226,15 @@ class GUI(tk.Tk):
         :return: None.
         """
         logger.debug("Opening directory...")
-        path = fd.askdirectory(initialdir=str(Path.cwd()),
+        previous_path = self.load_key("last_dir_opened")
+        logger.debug(f"Previous path opened is {repr(previous_path)}")
+        path = fd.askdirectory(initialdir=str(Path.cwd()) if previous_path is None else previous_path,
                                title="CircuitPython Project Manager: Select a directory")
         if path:
             path = Path(path)
             logger.debug(f"Returned valid path! Path is {repr(path)}")
             self.project_location_var.set(str(path))
+            self.save_key("last_dir_opened", str(path))
         else:
             logger.debug("User canceled opening project!")
 
@@ -398,7 +404,6 @@ class GUI(tk.Tk):
         """
         self.file_menu = tk.Menu(self.menu_bar)
         self.menu_bar.add_cascade(menu=self.file_menu, label="File")
-        # TODO: Remember last open path and use that as starting one
         self.file_menu.add_command(label="New...", command=self.open_create_new_project)
         self.file_menu.add_command(label="Open...", command=self.open_project)
         # TODO: Add open recent
