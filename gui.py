@@ -592,6 +592,16 @@ class GUI(tk.Tk):
         self.drive_selector_show_all_checkbtn.grid(row=0, column=3, padx=1, pady=1, sticky=tk.NW)
         self.update_drives()
 
+    def update_listbox_context(self):
+        """
+        Update the right-click context menu for the files to sync menu.
+
+        :return: None.
+        """
+        self.to_sync_listbox.right_click_menu.entryconfigure("Delete",
+            state=tk.NORMAL if len(self.to_sync_listbox.curselection()) > 0 else tk.DISABLED
+        )
+
     def make_file_sync_listbox(self, to_sync: list[str], project_root: Path) -> None:
         """
         Create the listbox that holds the files and directories to sync.
@@ -606,9 +616,10 @@ class GUI(tk.Tk):
         self.to_sync_label.grid(row=0, column=0, columnspan=3, padx=1, pady=1, sticky=tk.NW)
         self.to_sync_var = tk.StringVar(value=to_sync)
         self.to_sync_listbox = ListboxWithRightClick(master=self.to_sync_frame, height=10, width=20, listvariable=self.to_sync_var)
-        # TODO: Able to select something, right click, and delete it
         # TODO: Able to right click on listbox and add file/directory
-        self.to_sync_listbox.initiate_right_click_menu(disable=["Copy", "Cut", "Paste", "Delete", "Select all"])
+        self.to_sync_listbox.initiate_right_click_menu(disable=["Copy", "Cut", "Paste", "Delete", "Select all"],
+                                                       callback=self.update_listbox_context)
+        self.to_sync_listbox.right_click_menu.entryconfigure("Delete", command=self.remove_thing_to_sync)
         self.to_sync_listbox.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
         self.to_sync_scrollbar = ttk.Scrollbar(master=self.to_sync_frame, command=self.to_sync_listbox.yview)
         self.to_sync_scrollbar.grid(row=1, column=1, padx=0, pady=1, sticky=tk.NSEW)
