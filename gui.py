@@ -439,15 +439,10 @@ class GUI(tk.Tk):
         if self.recent_projects is None:
             self.recent_projects = []
         self.recent_projects = [Path(p) for p in self.recent_projects]
-        temp = []
         for path in self.recent_projects:
-            temp.append(path)
-        self.recent_projects = []
-        for path in temp:
-            if path.exists():
-                self.recent_projects.append(path)
-        for path in self.recent_projects:
-            self.opened_recent_menu.add_command(label=str(path), command=lambda path=path: self.open_project(path))
+            self.opened_recent_menu.add_command(label=str(path),
+                                                state=tk.NORMAL if path.exists() else tk.DISABLED,
+                                                command=lambda path=path: self.open_project(path))
         if len(self.recent_projects) == 0:
             self.opened_recent_menu.add_command(label="No recent projects!", state=tk.DISABLED)
 
