@@ -798,6 +798,16 @@ class GUI(tk.Tk):
         logger.debug(f"Starting sync thread {repr(thread)}")
         thread.start()
 
+    def check_sync_buttons(self) -> None:
+        try:
+            self.sync_files_btn.config(
+                state=tk.DISABLED if not self.cpypmconfig["sync_location"] or not Path(self.cpypmconfig["sync_location"]).exists() else tk.NORMAL
+            )
+        except tk.TclError:
+            pass
+        else:
+            self.after(ms=100, func=self.check_sync_buttons)
+
     def make_save_and_sync_buttons(self) -> None:
         """
         Create the rest of the buttons, like the save and sync buttons.
@@ -808,9 +818,9 @@ class GUI(tk.Tk):
         self.save_config_btn.grid(row=4, column=0, padx=1, pady=1, sticky=tk.NW)
         self.discard_config_btn = ttk.Button(master=self.right_frame, text="Discard", width=12, command=self.discard_modified)
         self.discard_config_btn.grid(row=5, column=0, padx=1, pady=1, sticky=tk.NW)
-        # TODO: Disable syncing if drive not set
         self.sync_files_btn = ttk.Button(master=self.right_frame, text="Sync", width=12, command=self.start_sync_thread)
         self.sync_files_btn.grid(row=6, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.check_sync_buttons()
 
     def update_main_gui(self) -> None:
         """
