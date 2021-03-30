@@ -428,6 +428,21 @@ class GUI(tk.Tk):
         self.create_new_project_buttons()
         self.new_project_frame.wait_window()
 
+    def clear_recent_projects(self) -> None:
+        """
+        Clear the recent projects.
+
+        :return: None.
+        """
+        logger.debug("Clearing recent projects...")
+        if mbox.askokcancel("CircuitPython Project Manager: Confirm",
+                            "Are you sure you want to clear all recent projects?"):
+            logger.debug("Clearing all recent projects!")
+            self.save_key("opened_recent", [])
+            self.update_recent_projects()
+        else:
+            logger.debug("User canceled clearing all recent projects!")
+
     def update_recent_projects(self) -> None:
         """
         Update the opened recent projects menu.
@@ -445,6 +460,9 @@ class GUI(tk.Tk):
                                                 command=lambda path=path: self.open_project(path))
         if len(self.recent_projects) == 0:
             self.opened_recent_menu.add_command(label="No recent projects!", state=tk.DISABLED)
+        self.opened_recent_menu.add_separator()
+        self.opened_recent_menu.add_command(label="Clear recent projects", command=self.clear_recent_projects,
+                                            state=tk.DISABLED if len(self.recent_projects) == 0 else tk.NORMAL)
 
     def create_file_menu(self) -> None:
         """
@@ -838,7 +856,7 @@ class GUI(tk.Tk):
             return
         try:
             logger.debug("Discarding all changes!")
-            self.make_main_gui()
+            self.update_main_gui()
         except FileNotFoundError:
             logger.exception("Uh oh, an exception has occurred!")
             self.close_project()
@@ -915,6 +933,7 @@ class GUI(tk.Tk):
 
         :return: None.
         """
+        self.disable_closing = True
         self.update_menu_state()
         logger.debug("Updating main GUI...")
         self.destroy_all_children(widget=self.main_frame)
@@ -926,12 +945,15 @@ class GUI(tk.Tk):
 
         :return: None.
         """
+        logger.debug(f"self.cpypmconfig_path: {repr(self.cpypmconfig_path)}")
         if self.cpypmconfig_path is None:
+            logger.info("No project is open!")
             ttk.Label(
                 master=self.main_frame,
                 text="No project is open! Use the file menu to create\na new project or open an existing project!"
             ).grid(row=0, column=0, sticky=tk.NW)
         else:
+            logger.info("Project is open - (re)loading everything!")
             logger.debug(f"Parsing {repr(self.cpypmconfig_path)}")
             self.cpypmconfig = json.loads(self.cpypmconfig_path.read_text())
             self.make_title(self.cpypmconfig["project_name"])
@@ -941,6 +963,7 @@ class GUI(tk.Tk):
             self.make_file_sync_buttons()
             ttk.Separator(master=self.right_frame, orient=tk.HORIZONTAL).grid(row=3, column=0, padx=1, pady=1, sticky=tk.NW + tk.E)
             self.make_save_and_sync_buttons()
+        self.disable_closing = False
 
     def make_main_gui(self, cpypmconfig_path: Path = None) -> None:
         """
