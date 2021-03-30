@@ -735,13 +735,34 @@ class GUI(tk.Tk):
         self.to_sync_remove_btn.grid(row=2, column=0, padx=1, pady=1, sticky=tk.NW)
         self.update_file_sync_buttons()
 
+    def save_modified(self) -> None:
+        """
+        Save the configuration file.
+
+        :return: None.
+        """
+        self.set_childrens_state(frame=self.main_frame, enabled=False)
+        logger.debug(f"Saving .cpypmconfig to {repr(self.cpypmconfig_path)}")
+        self.cpypmconfig["project_name"] = self.title_var.get()
+        self.cpypmconfig["description"] = self.description_text.get("1.0", tk.END)
+        self.cpypmconfig["sync_location"] = self.drive_selector_combobox.get()
+        try:
+            self.cpypmconfig_path.write_text(json.dumps(self.cpypmconfig, indent=4))
+        except FileNotFoundError:
+            logger.exception("Uh oh, an exception has occurred!")
+            self.close_project()
+            mbox.showerror("CircuitPython Project Manager: Error!",
+                           "Your project's .cpypmconfig file cannot be accessed, closing project!")
+        else:
+            self.after(ms=100, func=lambda: self.set_childrens_state(frame=self.main_frame, enabled=True))
+
     def make_save_and_sync_buttons(self) -> None:
         """
         Create the rest of the buttons, like the save and sync buttons.
 
         :return: None.
         """
-        self.save_config_btn = ttk.Button(master=self.right_frame, text="Save", width=12, command=None)
+        self.save_config_btn = ttk.Button(master=self.right_frame, text="Save", width=12, command=self.save_modified)
         self.save_config_btn.grid(row=4, column=0, padx=1, pady=1, sticky=tk.NW)
         self.discard_config_btn = ttk.Button(master=self.right_frame, text="Discard", width=12, command=None)
         self.discard_config_btn.grid(row=5, column=0, padx=1, pady=1, sticky=tk.NW)
