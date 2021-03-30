@@ -888,20 +888,23 @@ class GUI(tk.Tk):
             ttk.Separator(master=self.right_frame, orient=tk.HORIZONTAL).grid(row=3, column=0, padx=1, pady=1, sticky=tk.NW + tk.E)
             self.make_save_and_sync_buttons()
 
-    def make_main_gui(self) -> None:
+    def make_main_gui(self, cpypmconfig_path: Path = None) -> None:
         """
         Make the main GUI stuffs.
 
+        :param cpypmconfig_path: A pathlib.Path to the .cpypmconfig file, defaults to None.
         :return: None.
         """
         self.main_frame = ttk.Frame(master=self)
         self.main_frame.grid(row=0, column=0, sticky=tk.NW)
+        self.cpypmconfig_path = cpypmconfig_path
         self.update_main_gui()
 
-    def create_gui(self) -> None:
+    def create_gui(self, cpypmconfig_path: Path = None) -> None:
         """
         Create the GUI.
 
+        :param cpypmconfig_path: A pathlib.Path to the .cpypmconfig file, defaults to None.
         :return: None.
         """
         logger.debug("Creating GUI...")
@@ -910,17 +913,19 @@ class GUI(tk.Tk):
             self.global_style.theme_use("clam")
         self.create_config()
         self.create_menu()
-        self.make_main_gui()
+        self.make_main_gui(cpypmconfig_path)
 
-    def run(self) -> None:
+    def run(self, cpypmconfig_path: Path = None) -> None:
         """
         Run the GUI, this will block.
 
+        :param cpypmconfig_path: A pathlib.Path to the .cpypmconfig file, defaults to None.
         :return: None.
         """
-        self.create_gui()
+        self.create_gui(cpypmconfig_path)
         self.lift()
         self.minsize(width=200, height=100)
+        self.update_main_gui()
         self.mainloop()
 
     def __exit__(self, err_type=None, err_value=None, err_traceback=None):
