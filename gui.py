@@ -525,6 +525,8 @@ class GUI(tk.Tk):
                                       state=tk.NORMAL if self.cpypmconfig_path is None else tk.DISABLED)
         self.file_menu.entryconfigure("Open...",
                                       state=tk.NORMAL if self.cpypmconfig_path is None else tk.DISABLED)
+        self.file_menu.entryconfigure("Open recent",
+                                      state=tk.NORMAL if self.cpypmconfig_path is None else tk.DISABLED)
         self.file_menu.entryconfigure("Close project",
                                       state=tk.DISABLED if self.cpypmconfig_path is None else tk.NORMAL)
         self.edit_menu.entryconfigure("Open .cpypmconfig",
