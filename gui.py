@@ -171,7 +171,8 @@ class GUI(tk.Tk):
         """
         logger.debug("Closing project...")
         self.cpypmconfig_path = None
-        self.update_main_gui()
+        self.set_childrens_state(self.main_frame, False)
+        self.after(ms=100, func=self.update_main_gui)
 
     def dismiss_dialog(self, dlg: tk.Toplevel) -> None:
         """
@@ -416,8 +417,9 @@ class GUI(tk.Tk):
                                    command=lambda: open_application(self.cpypmconfig_path))
         self.edit_menu.add_command(label="Open .cpypmconfig file location",
                                    command=lambda: open_application(self.cpypmconfig_path.parent))
-        # TODO: Add save changes
-        # TODO: Add discard changes
+        self.edit_menu.add_separator()
+        self.edit_menu.add_command(label="Save changes", command=self.save_modified)
+        self.edit_menu.add_command(label="Discard changes", command=self.discard_modified)
 
     def create_sync_menu(self) -> None:
         """
@@ -461,6 +463,10 @@ class GUI(tk.Tk):
         self.edit_menu.entryconfigure("Open .cpypmconfig",
                                       state=tk.DISABLED if self.cpypmconfig_path is None else tk.NORMAL)
         self.edit_menu.entryconfigure("Open .cpypmconfig file location",
+                                      state=tk.DISABLED if self.cpypmconfig_path is None else tk.NORMAL)
+        self.edit_menu.entryconfigure("Save changes",
+                                      state=tk.DISABLED if self.cpypmconfig_path is None else tk.NORMAL)
+        self.edit_menu.entryconfigure("Discard changes",
                                       state=tk.DISABLED if self.cpypmconfig_path is None else tk.NORMAL)
         try:
             if self.cpypmconfig_path is None or json.loads(self.cpypmconfig_path.read_text())["sync_location"] is None:
@@ -727,6 +733,8 @@ class GUI(tk.Tk):
         """
         self.set_childrens_state(frame=self.main_frame, enabled=False)
         self.disable_closing = True
+        self.edit_menu.entryconfigure("Save changes", state=tk.DISABLED)
+        self.edit_menu.entryconfigure("Discard changes", state=tk.DISABLED)
         logger.debug(f"Saving .cpypmconfig to {repr(self.cpypmconfig_path)}")
         self.cpypmconfig["project_name"] = self.title_var.get()
         self.cpypmconfig["description"] = self.description_text.get("1.0", tk.END)
@@ -740,8 +748,10 @@ class GUI(tk.Tk):
                            "Your project's .cpypmconfig file cannot be accessed, closing project!"
                            "\n\n" + (traceback.format_exc() if self.show_traceback() else ""))
         else:
-            self.after(ms=100, func=lambda: self.set_childrens_state(frame=self.main_frame, enabled=True))
+            self.set_childrens_state(frame=self.main_frame, enabled=True)
             self.disable_closing = False
+            self.edit_menu.entryconfigure("Save changes", state=tk.NORMAL)
+            self.edit_menu.entryconfigure("Discard changes", state=tk.NORMAL)
 
     def discard_modified(self) -> None:
         """
