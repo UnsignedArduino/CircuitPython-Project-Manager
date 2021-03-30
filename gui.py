@@ -419,28 +419,6 @@ class GUI(tk.Tk):
         # TODO: Add save changes
         # TODO: Add discard changes
 
-    def sync_files(self) -> None:
-        """
-        Sync the files - this will block.
-
-        :return: None.
-        """
-        self.disable_closing = True
-        self.sync_menu.entryconfigure("Sync files", state=tk.DISABLED)
-        project.sync_project(cpypm_config_path=self.cpypmconfig_path)
-        self.sync_menu.entryconfigure("Sync files", state=tk.NORMAL)
-        self.disable_closing = False
-
-    def start_sync_files_thread(self) -> None:
-        """
-        Start the sync files thread.
-
-        :return: None.
-        """
-        thread = Thread(target=self.sync_files, args=(), daemon=True)
-        logger.debug(f"Starting sync file thread {repr(thread)}")
-        thread.start()
-
     def create_sync_menu(self) -> None:
         """
         Create the sync menu.
@@ -449,7 +427,7 @@ class GUI(tk.Tk):
         """
         self.sync_menu = tk.Menu(self.menu_bar)
         self.menu_bar.add_cascade(menu=self.sync_menu, label="Sync")
-        self.sync_menu.add_command(label="Sync files", command=self.start_sync_files_thread)
+        self.sync_menu.add_command(label="Sync files", command=self.start_sync_thread)
 
     def create_help_menu(self) -> None:
         """
@@ -804,6 +782,7 @@ class GUI(tk.Tk):
                            "\n\n" + (traceback.format_exc() if self.show_traceback() else ""))
         self.set_childrens_state(self.main_frame, True)
         self.disable_closing = False
+        self.sync_menu.entryconfigure("Sync files", state=tk.NORMAL)
 
     def start_sync_thread(self) -> None:
         """
@@ -814,6 +793,7 @@ class GUI(tk.Tk):
         # TODO: Pop up unclosable dialog saying syncing...
         self.set_childrens_state(self.main_frame, False)
         self.disable_closing = True
+        self.sync_menu.entryconfigure("Sync files", state=tk.DISABLED)
         thread = Thread(target=self.sync, args=(), daemon=True)
         logger.debug(f"Starting sync thread {repr(thread)}")
         thread.start()
