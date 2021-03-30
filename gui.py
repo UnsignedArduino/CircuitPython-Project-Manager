@@ -796,6 +796,7 @@ class GUI(tk.Tk):
         self.set_childrens_state(self.main_frame, True)
         self.disable_closing = False
         self.sync_menu.entryconfigure("Sync files", state=tk.NORMAL)
+        self.dismiss_dialog(self.sync_dialog)
 
     def start_sync_thread(self) -> None:
         """
@@ -803,10 +804,13 @@ class GUI(tk.Tk):
 
         :return: None.
         """
-        # TODO: Pop up unclosable dialog saying syncing...
         self.set_childrens_state(self.main_frame, False)
         self.disable_closing = True
         self.sync_menu.entryconfigure("Sync files", state=tk.DISABLED)
+        self.sync_dialog = self.create_dialog("CircuitPython Project Manager: Syncing files...")
+        self.sync_dialog.protocol("WM_DELETE_WINDOW", None)
+        self.sync_label = ttk.Label(master=self.sync_dialog, text="Syncing files...")
+        self.sync_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
         thread = Thread(target=self.sync, args=(), daemon=True)
         logger.debug(f"Starting sync thread {repr(thread)}")
         thread.start()
