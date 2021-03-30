@@ -456,7 +456,6 @@ class GUI(tk.Tk):
         self.menu_bar.add_cascade(menu=self.file_menu, label="File", underline=0)
         self.file_menu.add_command(label="New...", command=self.open_create_new_project, underline=0)
         self.file_menu.add_command(label="Open...", command=self.open_project_dialog, underline=0)
-        # TODO: Add open recent
         self.opened_recent_menu = tk.Menu(self.file_menu)
         self.file_menu.add_cascade(label="Open recent", menu=self.opened_recent_menu, underline=5)
         self.update_recent_projects()
