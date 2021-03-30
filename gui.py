@@ -616,10 +616,12 @@ class GUI(tk.Tk):
         self.to_sync_label.grid(row=0, column=0, columnspan=3, padx=1, pady=1, sticky=tk.NW)
         self.to_sync_var = tk.StringVar(value=to_sync)
         self.to_sync_listbox = ListboxWithRightClick(master=self.to_sync_frame, height=10, width=20, listvariable=self.to_sync_var)
-        # TODO: Able to right click on listbox and add file/directory
         self.to_sync_listbox.initiate_right_click_menu(disable=["Copy", "Cut", "Paste", "Delete", "Select all"],
                                                        callback=self.update_listbox_context)
         self.to_sync_listbox.right_click_menu.entryconfigure("Delete", command=self.remove_thing_to_sync)
+        self.to_sync_listbox.right_click_menu.add_separator()
+        self.to_sync_listbox.right_click_menu.add_command(label="Add file", command=self.add_file_to_sync)
+        self.to_sync_listbox.right_click_menu.add_command(label="Add directory", command=self.add_directory_to_sync)
         self.to_sync_listbox.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
         self.to_sync_scrollbar = ttk.Scrollbar(master=self.to_sync_frame, command=self.to_sync_listbox.yview)
         self.to_sync_scrollbar.grid(row=1, column=1, padx=0, pady=1, sticky=tk.NSEW)
