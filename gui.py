@@ -416,6 +416,8 @@ class GUI(tk.Tk):
                                    command=lambda: open_application(self.cpypmconfig_path))
         self.edit_menu.add_command(label="Open .cpypmconfig file location",
                                    command=lambda: open_application(self.cpypmconfig_path.parent))
+        # TODO: Add save changes
+        # TODO: Add discard changes
 
     def sync_files(self) -> None:
         """
@@ -756,6 +758,25 @@ class GUI(tk.Tk):
         else:
             self.after(ms=100, func=lambda: self.set_childrens_state(frame=self.main_frame, enabled=True))
 
+    def discard_modified(self) -> None:
+        """
+        Discard modified configuration file.
+
+        :return: None.
+        """
+        if not mbox.askokcancel("CircuitPython Project Manager: Confirm",
+                                "Are you sure you want to discard all changes?"):
+            logger.debug("User canceled discarding all changes!")
+            return
+        try:
+            logger.debug("Discarding all changes!")
+            self.make_main_gui()
+        except FileNotFoundError:
+            logger.exception("Uh oh, an exception has occurred!")
+            self.close_project()
+            mbox.showerror("CircuitPython Project Manager: Error!",
+                           "Your project's .cpypmconfig file cannot be accessed, closing project!")
+
     def make_save_and_sync_buttons(self) -> None:
         """
         Create the rest of the buttons, like the save and sync buttons.
@@ -764,7 +785,7 @@ class GUI(tk.Tk):
         """
         self.save_config_btn = ttk.Button(master=self.right_frame, text="Save", width=12, command=self.save_modified)
         self.save_config_btn.grid(row=4, column=0, padx=1, pady=1, sticky=tk.NW)
-        self.discard_config_btn = ttk.Button(master=self.right_frame, text="Discard", width=12, command=None)
+        self.discard_config_btn = ttk.Button(master=self.right_frame, text="Discard", width=12, command=self.discard_modified)
         self.discard_config_btn.grid(row=5, column=0, padx=1, pady=1, sticky=tk.NW)
         self.sync_files_btn = ttk.Button(master=self.right_frame, text="Sync", width=12, command=None)
         self.sync_files_btn.grid(row=6, column=0, padx=1, pady=1, sticky=tk.NW)
@@ -794,8 +815,8 @@ class GUI(tk.Tk):
             #  - [✔] A button to add file when nothing selected in listbox and open dialog to select file
             #  - [✔] A button to add directory when nothing selected in listbox and open dialog to select directory
             #  - [✔] A button to remove when something is selected in listbox and confirm too
-            #  - [ ] Button to save all changes to .cpypmconfig which disables everything until finished saved
-            #  - [ ] Button to discard and reload all changes to .cpypmconfig which
+            #  - [✔] Button to save all changes to .cpypmconfig which disables everything until finished saved
+            #  - [✔] Button to discard and reload all changes to .cpypmconfig which
             #  - [ ] Button to sync files which pops up un-closable dialog with status bar and label saying syncing...
             self.make_title(self.cpypmconfig["project_name"])
             self.make_description(self.cpypmconfig["description"])
