@@ -403,13 +403,13 @@ class GUI(tk.Tk):
         :return: None.
         """
         self.file_menu = tk.Menu(self.menu_bar)
-        self.menu_bar.add_cascade(menu=self.file_menu, label="File")
-        self.file_menu.add_command(label="New...", command=self.open_create_new_project)
-        self.file_menu.add_command(label="Open...", command=self.open_project)
+        self.menu_bar.add_cascade(menu=self.file_menu, label="File", underline=0)
+        self.file_menu.add_command(label="New...", command=self.open_create_new_project, underline=0)
+        self.file_menu.add_command(label="Open...", command=self.open_project, underline=0)
         # TODO: Add open recent
-        self.file_menu.add_command(label="Close project", command=self.close_project)
+        self.file_menu.add_command(label="Close project", command=self.close_project, underline=0)
         self.file_menu.add_separator()
-        self.file_menu.add_command(label="Exit", command=self.try_to_close)
+        self.file_menu.add_command(label="Exit", command=self.try_to_close, underline=0)
 
     def create_edit_menu(self) -> None:
         """
@@ -418,14 +418,14 @@ class GUI(tk.Tk):
         :return: None.
         """
         self.edit_menu = tk.Menu(self.menu_bar)
-        self.menu_bar.add_cascade(menu=self.edit_menu, label="Edit")
+        self.menu_bar.add_cascade(menu=self.edit_menu, label="Edit", underline=0)
         self.edit_menu.add_command(label="Open .cpypmconfig",
-                                   command=lambda: open_application(self.cpypmconfig_path))
+                                   command=lambda: open_application(self.cpypmconfig_path), underline=6)
         self.edit_menu.add_command(label="Open .cpypmconfig file location",
-                                   command=lambda: open_application(self.cpypmconfig_path.parent))
+                                   command=lambda: open_application(self.cpypmconfig_path.parent), underline=23)
         self.edit_menu.add_separator()
-        self.edit_menu.add_command(label="Save changes", command=self.save_modified)
-        self.edit_menu.add_command(label="Discard changes", command=self.discard_modified)
+        self.edit_menu.add_command(label="Save changes", command=self.save_modified, underline=0)
+        self.edit_menu.add_command(label="Discard changes", command=self.discard_modified, underline=0)
 
     def create_sync_menu(self) -> None:
         """
@@ -434,8 +434,8 @@ class GUI(tk.Tk):
         :return: None.
         """
         self.sync_menu = tk.Menu(self.menu_bar)
-        self.menu_bar.add_cascade(menu=self.sync_menu, label="Sync")
-        self.sync_menu.add_command(label="Sync files", command=self.start_sync_thread)
+        self.menu_bar.add_cascade(menu=self.sync_menu, label="Sync", underline=0)
+        self.sync_menu.add_command(label="Sync files", command=self.start_sync_thread, underline=0)
 
     def create_help_menu(self) -> None:
         """
@@ -444,16 +444,16 @@ class GUI(tk.Tk):
         :return: None.
         """
         self.help_menu = tk.Menu(self.menu_bar)
-        self.menu_bar.add_cascade(menu=self.help_menu, label="Help")
-        self.help_menu.add_command(label="Open configuration", command=lambda: open_application(str(self.config_path)))
-        self.help_menu.add_command(label="Open logs", command=lambda: open_application(str(Path.cwd() / "log.log")))
+        self.menu_bar.add_cascade(menu=self.help_menu, label="Help", underline=0)
+        self.help_menu.add_command(label="Open configuration", command=lambda: open_application(str(self.config_path)), underline=5)
+        self.help_menu.add_command(label="Open logs", command=lambda: open_application(str(Path.cwd() / "log.log")), underline=5)
         self.help_menu.add_separator()
         # TODO: Implement opening the README.md
-        self.help_menu.add_command(label="Open README.md", state=tk.DISABLED)
+        self.help_menu.add_command(label="Open README.md", state=tk.DISABLED, underline=5)
         # TODO: Implement opening the project on GitHub
-        self.help_menu.add_command(label="Open project on GitHub", state=tk.DISABLED)
+        self.help_menu.add_command(label="Open project on GitHub", state=tk.DISABLED, underline=5)
         # TODO: Implement opening an issue on GitHub
-        self.help_menu.add_command(label="Open issue on GitHub", state=tk.DISABLED)
+        self.help_menu.add_command(label="Open issue on GitHub", state=tk.DISABLED, underline=5)
 
     def update_menu_state(self) -> None:
         """
@@ -494,8 +494,6 @@ class GUI(tk.Tk):
 
         :return: None.
         """
-        # TODO: Add underline for each menu option -
-        #  https://tkdocs.com/tutorial/menus.html#maincontent:~:text=Underline,-All
         # TODO: Do accelerator keys -
         #  https://tkdocs.com/tutorial/menus.html#maincontent:~:text=components.-,Accelerator%20Keys
         self.option_add("*tearOff", tk.FALSE)
