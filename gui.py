@@ -165,9 +165,21 @@ class GUI(tk.Tk):
         self.save_key("opened_recent", [str(p) for p in recent_projects])
         self.update_recent_projects()
 
-    def open_project(self) -> None:
+    def open_project(self, path: Path) -> None:
         """
         Open a project.
+
+        :param path: The path to the .cpypmconfig file.
+        :return: None.
+        """
+        logger.debug(f"Opening project at path {repr(path)}")
+        self.cpypmconfig_path = path
+        self.update_main_gui()
+        self.add_recent_project(path)
+
+    def open_project_dialog(self) -> None:
+        """
+        Open a project with a dialog to select a file.
 
         :return: None.
         """
@@ -180,9 +192,7 @@ class GUI(tk.Tk):
         if path:
             path = Path(path)
             logger.debug(f"Returned valid path! Path is {repr(path)}")
-            self.cpypmconfig_path = path
-            self.update_main_gui()
-            self.add_recent_project(path)
+            self.open_project(path)
         else:
             logger.debug("User canceled opening project!")
 
@@ -429,8 +439,16 @@ class GUI(tk.Tk):
         if self.recent_projects is None:
             self.recent_projects = []
         self.recent_projects = [Path(p) for p in self.recent_projects]
+        temp = []
         for path in self.recent_projects:
-            self.opened_recent_menu.add_command(label=str(path), command=None)
+            temp.append(path)
+        self.recent_projects = []
+        for path in temp:
+            if path.exists():
+                self.recent_projects.append(path)
+        for path in self.recent_projects:
+            # TODO: Fix opening last one
+            self.opened_recent_menu.add_command(label=str(path), command=lambda: self.open_project(path))
         if len(self.recent_projects) == 0:
             self.opened_recent_menu.add_command(label="No recent projects!", state=tk.DISABLED)
 
@@ -443,7 +461,7 @@ class GUI(tk.Tk):
         self.file_menu = tk.Menu(self.menu_bar)
         self.menu_bar.add_cascade(menu=self.file_menu, label="File", underline=0)
         self.file_menu.add_command(label="New...", command=self.open_create_new_project, underline=0)
-        self.file_menu.add_command(label="Open...", command=self.open_project, underline=0)
+        self.file_menu.add_command(label="Open...", command=self.open_project_dialog, underline=0)
         # TODO: Add open recent
         self.opened_recent_menu = tk.Menu(self.file_menu)
         self.file_menu.add_cascade(label="Open recent", menu=self.opened_recent_menu, underline=5)
