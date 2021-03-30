@@ -40,6 +40,8 @@ if len(argv) > 1:
     logger.debug("Path to .cpypmconfig was passed in!")
     logger.debug(f"Path is {repr(argv[1])}")
     path = Path(argv[1])
+    if path.is_dir():
+        path = None
 
 logger.debug(f"Starting application...")
 logger.info(f"Log level is {repr(LEVEL)}")
