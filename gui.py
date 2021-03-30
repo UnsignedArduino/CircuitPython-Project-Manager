@@ -171,8 +171,7 @@ class GUI(tk.Tk):
         """
         logger.debug("Closing project...")
         self.cpypmconfig_path = None
-        self.set_childrens_state(self.main_frame, False)
-        self.after(ms=100, func=self.update_main_gui)
+        self.update_main_gui()
 
     def dismiss_dialog(self, dlg: tk.Toplevel) -> None:
         """
@@ -399,8 +398,10 @@ class GUI(tk.Tk):
         """
         self.file_menu = tk.Menu(self.menu_bar)
         self.menu_bar.add_cascade(menu=self.file_menu, label="File")
+        # TODO: Remember last open path and use that as starting one
         self.file_menu.add_command(label="New...", command=self.open_create_new_project)
         self.file_menu.add_command(label="Open...", command=self.open_project)
+        # TODO: Add open recent
         self.file_menu.add_command(label="Close project", command=self.close_project)
         self.file_menu.add_separator()
         self.file_menu.add_command(label="Exit", command=self.try_to_close)
@@ -446,6 +447,8 @@ class GUI(tk.Tk):
         self.help_menu.add_command(label="Open README.md", state=tk.DISABLED)
         # TODO: Implement opening the project on GitHub
         self.help_menu.add_command(label="Open project on GitHub", state=tk.DISABLED)
+        # TODO: Implement opening an issue on GitHub
+        self.help_menu.add_command(label="Open issue on GitHub", state=tk.DISABLED)
 
     def update_menu_state(self) -> None:
         """
@@ -841,6 +844,14 @@ class GUI(tk.Tk):
         self.update_menu_state()
         logger.debug("Updating main GUI...")
         self.destroy_all_children(widget=self.main_frame)
+        self.after(ms=200, func=self.create_main_gui)
+
+    def create_main_gui(self) -> None:
+        """
+        Create the main GUI.
+
+        :return: None.
+        """
         if self.cpypmconfig_path is None:
             ttk.Label(
                 master=self.main_frame,
