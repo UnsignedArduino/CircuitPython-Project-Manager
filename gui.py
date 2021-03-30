@@ -722,18 +722,31 @@ class GUI(tk.Tk):
 
         :return: None.
         """
-        self.to_sync_btns_frame = ttk.Frame(master=self.to_sync_frame)
-        self.to_sync_btns_frame.grid(row=1, column=2, padx=1, pady=1, sticky=tk.NW)
-        self.to_sync_add_file_btn = ttk.Button(master=self.to_sync_btns_frame, text="Add file", width=12,
+        self.right_frame = ttk.Frame(master=self.to_sync_frame)
+        self.right_frame.grid(row=1, column=2, padx=1, pady=1, sticky=tk.NW)
+        self.to_sync_add_file_btn = ttk.Button(master=self.right_frame, text="Add file", width=12,
                                                command=self.add_file_to_sync)
         self.to_sync_add_file_btn.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
-        self.to_sync_add_directory_btn = ttk.Button(master=self.to_sync_btns_frame, text="Add directory",
+        self.to_sync_add_directory_btn = ttk.Button(master=self.right_frame, text="Add directory",
                                                     command=self.add_directory_to_sync)
         self.to_sync_add_directory_btn.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
-        self.to_sync_remove_btn = ttk.Button(master=self.to_sync_btns_frame, text="Remove", width=12,
+        self.to_sync_remove_btn = ttk.Button(master=self.right_frame, text="Remove", width=12,
                                              command=self.remove_thing_to_sync)
         self.to_sync_remove_btn.grid(row=2, column=0, padx=1, pady=1, sticky=tk.NW)
         self.update_file_sync_buttons()
+
+    def make_save_and_sync_buttons(self) -> None:
+        """
+        Create the rest of the buttons, like the save and sync buttons.
+
+        :return: None.
+        """
+        self.save_config_btn = ttk.Button(master=self.right_frame, text="Save", width=12, command=None)
+        self.save_config_btn.grid(row=4, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.discard_config_btn = ttk.Button(master=self.right_frame, text="Discard", width=12, command=None)
+        self.discard_config_btn.grid(row=5, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.sync_files_btn = ttk.Button(master=self.right_frame, text="Sync", width=12, command=None)
+        self.sync_files_btn.grid(row=6, column=0, padx=1, pady=1, sticky=tk.NW)
 
     def update_main_gui(self) -> None:
         """
@@ -768,6 +781,8 @@ class GUI(tk.Tk):
             self.make_drive_selector(self.cpypmconfig["sync_location"])
             self.make_file_sync_listbox(self.cpypmconfig["files_to_sync"], Path(self.cpypmconfig["project_root"]))
             self.make_file_sync_buttons()
+            ttk.Separator(master=self.right_frame, orient=tk.HORIZONTAL).grid(row=3, column=0, padx=1, pady=1, sticky=tk.NW + tk.E)
+            self.make_save_and_sync_buttons()
 
     def make_main_gui(self) -> None:
         """
