@@ -447,8 +447,7 @@ class GUI(tk.Tk):
             if path.exists():
                 self.recent_projects.append(path)
         for path in self.recent_projects:
-            # TODO: Fix opening last one
-            self.opened_recent_menu.add_command(label=str(path), command=lambda: self.open_project(path))
+            self.opened_recent_menu.add_command(label=str(path), command=lambda path=path: self.open_project(path))
         if len(self.recent_projects) == 0:
             self.opened_recent_menu.add_command(label="No recent projects!", state=tk.DISABLED)
 
