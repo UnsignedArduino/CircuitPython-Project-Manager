@@ -36,7 +36,7 @@ import json
 from webbrowser import open as open_application
 from pathlib import Path
 from project_tools import drives, os_detect, project
-from typing import Union, Any
+from typing import Union, Any, Callable
 import logging
 from project_tools.create_logger import create_logger
 
@@ -464,6 +464,38 @@ class GUI(tk.Tk):
         self.opened_recent_menu.add_command(label="Clear recent projects", command=self.clear_recent_projects,
                                             state=tk.DISABLED if len(self.recent_projects) == 0 else tk.NORMAL)
 
+    def make_key_bind(self, ctrl_cmd: bool, mac_ctrl: bool, shift: bool, alt_option: bool, letter: str,
+                     callback: Callable) -> str:
+        """
+        Make a key-bind and bind to self.
+
+        :param ctrl_cmd: Have Control (PC) or Command (Mac) in the key combo.
+        :param mac_ctrl: Have Control (Mac) in the key combo.
+        :param shift: Have Shift in the key combo.
+        :param alt_option: Have Alt (PC) or Option (Mac) in the key combo.
+        :param letter: The letter to use as the key bind.
+        :param callback: What to call when the keybind is pressed.
+        :return: An accelerator that you can display.
+        """
+        combo = ""
+        if os_detect.on_mac():
+            if ctrl_cmd: combo += "Command-"
+            if mac_ctrl: combo += "Control-"
+            if shift: combo += "Shift-"
+            if alt_option: combo += "Option-"
+        else:
+            if ctrl_cmd: combo += "Control-"
+            if shift: combo += "Shift-"
+            if alt_option: combo += "Alt-"
+        keycode = f"<{combo}{letter.upper() if shift else letter.lower()}>"
+        logger.debug(f"Binding {repr(keycode)} to {repr(callback)}")
+        self.bind(keycode, callback)
+        combo += letter.upper()
+        if not os_detect.on_mac():
+            combo = combo.replace("-", "+")
+        logger.debug(f"Combo for {repr(callback)} is {repr(combo)}")
+        return combo
+
     def create_file_menu(self) -> None:
         """
         Create the file menu.
@@ -472,12 +504,21 @@ class GUI(tk.Tk):
         """
         self.file_menu = tk.Menu(self.menu_bar)
         self.menu_bar.add_cascade(menu=self.file_menu, label="File", underline=0)
-        self.file_menu.add_command(label="New...", command=self.open_create_new_project, underline=0)
-        self.file_menu.add_command(label="Open...", command=self.open_project_dialog, underline=0)
+        self.file_menu.add_command(label="New...", command=self.open_create_new_project, underline=0,
+                                   accelerator=self.make_key_bind(ctrl_cmd=True, mac_ctrl=False, shift=False,
+                                                                  alt_option=False, letter="n",
+                                                                  callback=lambda _: None if self.file_menu.entrycget("New...", "state") == tk.DISABLED else self.open_create_new_project()))
+        self.file_menu.add_command(label="Open...", command=self.open_project_dialog, underline=0,
+                                   accelerator=self.make_key_bind(ctrl_cmd=True, mac_ctrl=False, shift=False,
+                                                                  alt_option=False, letter="o",
+                                                                  callback=lambda _: None if self.file_menu.entrycget("Open...", "state") == tk.DISABLED else self.open_project_dialog()))
         self.opened_recent_menu = tk.Menu(self.file_menu)
         self.file_menu.add_cascade(label="Open recent", menu=self.opened_recent_menu, underline=5)
         self.update_recent_projects()
-        self.file_menu.add_command(label="Close project", command=self.close_project, underline=0)
+        self.file_menu.add_command(label="Close project", command=self.close_project, underline=0,
+                                   accelerator=self.make_key_bind(ctrl_cmd=True, mac_ctrl=False, shift=False,
+                                                                  alt_option=False, letter="q",
+                                                                  callback=lambda _: None if self.file_menu.entrycget("Close project", "state") == tk.DISABLED else self.close_project()))
         self.file_menu.add_separator()
         self.file_menu.add_command(label="Exit", command=self.try_to_close, underline=0)
 
@@ -494,8 +535,14 @@ class GUI(tk.Tk):
         self.edit_menu.add_command(label="Open .cpypmconfig file location",
                                    command=lambda: open_application(str(self.cpypmconfig_path.parent)), underline=23)
         self.edit_menu.add_separator()
-        self.edit_menu.add_command(label="Save changes", command=self.save_modified, underline=0)
-        self.edit_menu.add_command(label="Discard changes", command=self.discard_modified, underline=0)
+        self.edit_menu.add_command(label="Save changes", command=self.save_modified, underline=0,
+                                   accelerator=self.make_key_bind(ctrl_cmd=True, mac_ctrl=False, shift=False,
+                                                                  alt_option=False, letter="s",
+                                                                  callback=lambda _: None if self.edit_menu.entrycget("Save changes", "state") == tk.DISABLED else self.save_modified()))
+        self.edit_menu.add_command(label="Discard changes", command=self.discard_modified, underline=0,
+                                   accelerator=self.make_key_bind(ctrl_cmd=True, mac_ctrl=False, shift=False,
+                                                                  alt_option=False, letter="d",
+                                                                  callback=lambda _: None if self.edit_menu.entrycget("Discard changes", "state") == tk.DISABLED else self.discard_modified()))
 
     def create_sync_menu(self) -> None:
         """
@@ -505,7 +552,10 @@ class GUI(tk.Tk):
         """
         self.sync_menu = tk.Menu(self.menu_bar)
         self.menu_bar.add_cascade(menu=self.sync_menu, label="Sync", underline=0)
-        self.sync_menu.add_command(label="Sync files", command=self.start_sync_thread, underline=0)
+        self.sync_menu.add_command(label="Sync files", command=self.start_sync_thread, underline=0,
+                                   accelerator=self.make_key_bind(ctrl_cmd=True, mac_ctrl=False, shift=False,
+                                                                  alt_option=False, letter="r",
+                                                                  callback=lambda _: None if self.sync_menu.entrycget("Sync files", "state") == tk.DISABLED else self.start_sync_thread()))
 
     def create_help_menu(self) -> None:
         """
@@ -566,8 +616,6 @@ class GUI(tk.Tk):
 
         :return: None.
         """
-        # TODO: Do accelerator keys -
-        #  https://tkdocs.com/tutorial/menus.html#maincontent:~:text=components.-,Accelerator%20Keys
         self.option_add("*tearOff", tk.FALSE)
         self.menu_bar = tk.Menu(self, postcommand=self.update_menu_state)
         self["menu"] = self.menu_bar
