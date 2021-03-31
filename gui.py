@@ -5,7 +5,7 @@ The main GUI code.
 
 Classes list:
 
-No classes!
+- class GUI(tk.Tk).__init__(self)
 
 -----------
 
