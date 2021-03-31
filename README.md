@@ -63,3 +63,29 @@ Due to how new this project is, there are no binaries currently.
     ```
     1. If you downloaded the ZIP, move the downloaded ZIP to somewhere convenient (ex. home directory or desktop), 
        extract it, open a terminal and `cd` into the extracted directory.
+
+5. If you run `dir` (or `ls -a` on Mac and Linux) you should get something like this:
+
+    1. `dir` (Windows):
+    
+    ```commandline
+    03/31/2021  04:49 PM    <DIR>          .
+    03/31/2021  04:49 PM    <DIR>          ..
+    03/31/2021  04:49 PM                33 .gitignore
+    03/31/2021  04:49 PM    <DIR>          assets
+    03/31/2021  04:49 PM    <DIR>          default_circuitpython_hierarchy
+    03/31/2021  04:49 PM            59,538 gui.py
+    03/31/2021  04:49 PM    <DIR>          gui_tools
+    03/31/2021  04:49 PM               934 main.py
+    03/31/2021  04:49 PM    <DIR>          project_tools
+    03/31/2021  04:49 PM             3,674 README.md
+    03/31/2021  04:49 PM                38 requirements.txt
+    5 File(s)         64,217 bytes
+    6 Dir(s)  39,622,823,936 bytes free
+    ```
+
+   2. `ls -a` (macOS and Linux):
+    
+    ```commandline
+    .  ..  assets  default_circuitpython_hierarchy  .git  .gitignore  gui.py  gui_tools  main.py  project_tools  README.md  requirements.txt
+    ```
