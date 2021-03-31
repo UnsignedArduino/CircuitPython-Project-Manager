@@ -521,6 +521,12 @@ class GUI(tk.Tk):
                                                                   callback=lambda _: None if self.file_menu.entrycget("Close project", "state") == tk.DISABLED else self.close_project()))
         self.file_menu.add_separator()
         self.file_menu.add_command(label="Exit", command=self.try_to_close, underline=0)
+        if os_detect.on_mac():
+            self.file_menu.entryconfigure("Exit", accelerator=self.make_key_bind(ctrl_cmd=True, mac_ctrl=False, shift=True,
+                                                                                 alt_option=False, letter="w",
+                                                                                 callback=lambda _: self.destroy()))
+        else:
+            self.file_menu.entryconfigure("Exit", accelerator="Alt+F4")
 
     def create_edit_menu(self) -> None:
         """
@@ -1052,7 +1058,6 @@ class GUI(tk.Tk):
         self.create_gui(cpypmconfig_path)
         self.lift()
         self.minsize(width=200, height=100)
-        self.update_main_gui()
         self.mainloop()
 
     def __exit__(self, err_type=None, err_value=None, err_traceback=None):
