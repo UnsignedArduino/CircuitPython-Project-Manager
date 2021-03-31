@@ -20,4 +20,46 @@ GitHub-style markdown.
 
 > Note: As you can tell, the documentation is _definitely_ not finished. While I'm writing this documentation, you 
 > can either wait for me to finish (not recommended) or ping me on Discord on the Discord server linked above. 
-> (recommended) 
+> (recommended)
+
+## Table of Contents
+1. [Installing](#installing)
+   1. [Installing from source](#installing-from-source)
+
+## Installing
+
+Due to how new this project is, there are no binaries currently.  
+
+### Installing from source
+
+1. [Download](https://git-scm.com/downloads) and install Git. It does not matter what editor you use for Git's default.
+    1. Or...download this repo via the `Download ZIP` option under the green `Code` button, shown in Figure 1.1:
+    
+    ![A picture on the Download Zip button on the GitHub page](assets/1/1.png)
+    
+2. [Download](https://www.python.org/downloads/) and install Python **3.9**. (Because I use type definitions, but 3.8 
+   seems to work too)
+    1. Make sure to check `Add Python 3.x to PATH`, as shown in Figure 1.2:
+       
+       ![A picture of the Python 3.9 installer with the Add Python 3.9 to PATH checkbox checked](assets/1/2.png)
+       
+    2. Make sure to also install Tk/Tcl support! If you can access the IDLE, then Tk/Tcl is installed, as shown in 
+       Figure 1.3: (Only applies if you are using the `Customize installation` option in the installer)
+       
+       ![A picture of the Python 3.9 installer with the tcl/tk and IDLE checkbox checked](assets/1/3.png)
+   
+       If you are building Python,
+       [here is a guide on building Python on Debian I found helpful](https://linuxize.com/post/how-to-install-python-3-8-on-debian-10/).
+       Before building, you may need to install a bunch of packages using `apt`: 
+       `sudo apt install libbz2-dev libgdbm-dev libgdbm-compat-dev liblzma-dev libsqlite3-dev libssl-dev uuid-dev libreadline-dev zlib1g-dev tk-dev libffi-dev`.
+       
+3. If you are on Windows, I would also install the 
+   [Windows Terminal](https://www.microsoft.com/en-us/p/windows-terminal/9n0dx20hk701) while you are at it.
+
+4. If you installed Git, `cd` into a convenient directory (like the home directory or the desktop) and run:
+    ```commandline
+    git clone https://github.com/UnsignedArduino/CircuitPython-Project-Manager
+    cd CircuitPython-Project-Manager
+    ```
+    1. If you downloaded the ZIP, move the downloaded ZIP to somewhere convenient (ex. home directory or desktop), 
+       extract it, open a terminal and `cd` into the extracted directory.
