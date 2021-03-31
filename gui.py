@@ -27,11 +27,13 @@ from gui_tools.right_click.text import TextWithRightClick
 from gui_tools.idlelib_clone import tooltip
 from gui_tools.scrollable_frame import VerticalScrolledFrame
 from gui_tools.clickable_label import ClickableLabel
+from gui_tools import download_dialog
 from threading import Thread
 from pathlib import Path
 import traceback
 import json
 from webbrowser import open as open_application
+from markdown import markdown as markdown_to_html
 from pathlib import Path
 from project_tools import drives, os_detect, project
 from typing import Union, Any, Callable
@@ -141,6 +143,64 @@ class GUI(tk.Tk):
         :return: None.
         """
         tooltip.Hovertip(anchor_widget=widget, text=text)
+    
+    def open_file(self, path: Union[Path, str], download_url: str = None) -> None:
+        """
+        Open a file or a web page.
+
+        :param path: A string or a path representing the web page or the path of the file/directory.
+        :param download_url: If a file, the link to where we can download the file if it is missing.
+        :return: None.
+        """
+        logger.debug(f"Opening {repr(path)}...")
+        if isinstance(path, Path):
+            if path.exists():
+                open_application(str(path))
+            else:
+                mbox.showerror("CircuitPython Project Manager: ERROR!",
+                               "Oh no! An error occurred while opening this file!\n"
+                               f"The file {repr(path)} does not exist!")
+                if download_url and mbox.askokcancel("CircuitPython Bundle Manager: Confirm",
+                                                     "It looks like this file is available on GitHub!\n"
+                                                     "Would you like to download it?"):
+                    if download_dialog.download(master=self, url=download_url, path=path,
+                                                show_traceback=self.show_traceback()):
+                        open_application(str(path))
+        else:
+            open_application(path)
+
+    def open_markdown(self, path: Union[str, Path], convert_to_html: bool = True, download_url: str = None) -> None:
+        """
+        Open a file or a web page.
+
+        :param path: A string or a path to the markdown file.
+        :param convert_to_html: A bool on whether to convert the markdown to HTML or not.
+        :param download_url: If a file, the link to where we can download the file if it is missing.
+        :return: None.
+        """
+        logger.debug(f"Opening markdown file {repr(path)}...")
+        if isinstance(path, Path):
+            path = Path(path)
+        if path.exists():
+            if convert_to_html:
+                logger.debug(f"Converting markdown to HTML...")
+                html_path = Path.cwd() / (path.stem + ".html")
+                html_path.write_text(markdown_to_html(text=path.read_text(), extensions=["pymdownx.tilde"]))
+                logger.debug(f"Opening HTML in browser...")
+                open_application(url=html_path.as_uri())
+            else:
+                logger.debug(f"Opening {repr(path)} as markdown!")
+                open_application(str(path))
+        else:
+            mbox.showerror("CircuitPython Project Manager: ERROR!",
+                           "Oh no! An error occurred while opening this file!\n"
+                           f"The file {repr(path)} does not exist!")
+            if download_url and mbox.askokcancel("CircuitPython Bundle Manager: Confirm",
+                                                 "It looks like this file is available on GitHub!\n"
+                                                 "Would you like to download it?"):
+                if download_dialog.download(master=self, url=download_url, path=path,
+                                            show_traceback=self.show_traceback()):
+                    self.open_markdown(path=path)
 
     def create_config(self) -> None:
         """
@@ -589,6 +649,8 @@ class GUI(tk.Tk):
         self.help_menu.add_command(label="Open logs", command=lambda: open_application(str(Path.cwd() / "log.log")), underline=5)
         self.help_menu.add_separator()
         # TODO: Implement opening the README.md
+        # TODO: Bind to F1
+        # TODO: Add checkbutton on whether to convert to HTML or not
         self.help_menu.add_command(label="Open README.md", state=tk.DISABLED, underline=5)
         # TODO: Implement opening the project on GitHub
         self.help_menu.add_command(label="Open project on GitHub", state=tk.DISABLED, underline=5)
