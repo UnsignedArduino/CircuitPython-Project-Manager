@@ -643,7 +643,8 @@ class GUI(tk.Tk):
 
         :return: None.
         """
-        self.open_markdown(Path.cwd() / "README.md", convert_to_html=self.convert_to_md_var.get())
+        self.open_markdown(Path.cwd() / "README.md", convert_to_html=self.convert_to_md_var.get(),
+                           download_url="https://raw.githubusercontent.com/UnsignedArduino/CircuitPython-Project-Manager/main/README.md")
         self.disable_open_readme = False
 
     def start_open_readme_thread(self) -> None:
