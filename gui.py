@@ -524,7 +524,7 @@ class GUI(tk.Tk):
         if os_detect.on_mac():
             self.file_menu.entryconfigure("Exit", accelerator=self.make_key_bind(ctrl_cmd=True, mac_ctrl=False, shift=True,
                                                                                  alt_option=False, letter="w",
-                                                                                 callback=lambda _: self.destroy()))
+                                                                                 callback=lambda _: self.try_to_close()))
         else:
             self.file_menu.entryconfigure("Exit", accelerator="Alt+F4")
 
