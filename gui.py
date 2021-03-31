@@ -611,9 +611,9 @@ class GUI(tk.Tk):
         self.edit_menu = tk.Menu(self.menu_bar)
         self.menu_bar.add_cascade(menu=self.edit_menu, label="Edit", underline=0)
         self.edit_menu.add_command(label="Open .cpypmconfig",
-                                   command=lambda: open_application(str(self.cpypmconfig_path)), underline=6)
+                                   command=lambda: self.open_file(str(self.cpypmconfig_path)), underline=6)
         self.edit_menu.add_command(label="Open .cpypmconfig file location",
-                                   command=lambda: open_application(str(self.cpypmconfig_path.parent)), underline=23)
+                                   command=lambda: self.open_file(str(self.cpypmconfig_path.parent)), underline=23)
         self.edit_menu.add_separator()
         self.edit_menu.add_command(label="Save changes", command=self.save_modified, underline=0,
                                    accelerator=self.make_key_bind(ctrl_cmd=True, mac_ctrl=False, shift=False,
@@ -665,8 +665,8 @@ class GUI(tk.Tk):
         """
         self.help_menu = tk.Menu(self.menu_bar)
         self.menu_bar.add_cascade(menu=self.help_menu, label="Help", underline=0)
-        self.help_menu.add_command(label="Open configuration", command=lambda: open_application(str(self.config_path)), underline=5)
-        self.help_menu.add_command(label="Open logs", command=lambda: open_application(str(Path.cwd() / "log.log")), underline=5)
+        self.help_menu.add_command(label="Open configuration", command=lambda: self.open_file(str(self.config_path)), underline=5)
+        self.help_menu.add_command(label="Open logs", command=lambda: self.open_file(str(Path.cwd() / "log.log")), underline=5)
         self.help_menu.add_separator()
         self.help_menu.add_command(label="Open README.md",
                                    command=self.start_open_readme_thread, underline=5,
@@ -675,10 +675,12 @@ class GUI(tk.Tk):
         self.convert_to_md_var = tk.BooleanVar(value=True)
         self.disable_open_readme = False
         self.help_menu.add_checkbutton(label="Convert Markdown to HTML", variable=self.convert_to_md_var, onvalue=True, offvalue=False)
-        # TODO: Implement opening the project on GitHub
-        self.help_menu.add_command(label="Open project on GitHub", state=tk.DISABLED, underline=5)
-        # TODO: Implement opening an issue on GitHub
-        self.help_menu.add_command(label="Open issue on GitHub", state=tk.DISABLED, underline=5)
+        self.help_menu.add_command(label="Open project on GitHub",
+                                   command=lambda: self.open_file("https://github.com/UnsignedArduino/CircuitPython-Project-Manager"),
+                                   underline=5)
+        self.help_menu.add_command(label="Open issue on GitHub",
+                                   command=lambda: self.open_file("https://github.com/UnsignedArduino/CircuitPython-Project-Manager/issues/new"),
+                                   underline=5)
 
     def update_menu_state(self) -> None:
         """

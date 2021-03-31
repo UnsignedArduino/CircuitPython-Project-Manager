@@ -15,7 +15,6 @@ No functions!
 
 """
 
-# TODO: Make public on GitHub
 # TODO: Make binaries like in CPY Bundle Manager
 
 import gui
