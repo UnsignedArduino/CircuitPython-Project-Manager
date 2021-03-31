@@ -651,7 +651,7 @@ class GUI(tk.Tk):
         # TODO: Implement opening the README.md
         # TODO: Bind to F1
         # TODO: Add checkbutton on whether to convert to HTML or not
-        self.help_menu.add_command(label="Open README.md", state=tk.DISABLED, underline=5)
+        self.help_menu.add_command(label="Open README.md", command=lambda: self.open_markdown(Path.cwd() / "README.md"), underline=5)
         # TODO: Implement opening the project on GitHub
         self.help_menu.add_command(label="Open project on GitHub", state=tk.DISABLED, underline=5)
         # TODO: Implement opening an issue on GitHub
