@@ -692,7 +692,6 @@ class GUI(tk.Tk):
         self.description_text.initiate_right_click_menu()
         self.description_text.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
         self.description_text.insert("1.0", description)
-        # TODO: Tooltips for text doesn't work
         self.add_tooltip(self.description_text, "The description of the opened project.")
 
     def update_drives(self) -> None:
