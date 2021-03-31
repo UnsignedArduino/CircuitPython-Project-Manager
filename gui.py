@@ -637,6 +637,26 @@ class GUI(tk.Tk):
                                                                   alt_option=False, letter="r",
                                                                   callback=lambda _: None if self.sync_menu.entrycget("Sync files", "state") == tk.DISABLED else self.start_sync_thread()))
 
+    def open_readme(self) -> None:
+        """
+        Open the README, this may block on slow systems.
+
+        :return: None.
+        """
+        self.open_markdown(Path.cwd() / "README.md", convert_to_html=self.convert_to_md_var.get())
+        self.disable_open_readme = False
+
+    def start_open_readme_thread(self) -> None:
+        """
+        Start the open README thread.
+
+        :return: None.
+        """
+        self.disable_open_readme = True
+        thread = Thread(target=self.open_readme, args=(), daemon=True)
+        logger.debug(f"Starting open README thread {repr(thread)}")
+        thread.start()
+
     def create_help_menu(self) -> None:
         """
         Create the help menu.
@@ -648,10 +668,13 @@ class GUI(tk.Tk):
         self.help_menu.add_command(label="Open configuration", command=lambda: open_application(str(self.config_path)), underline=5)
         self.help_menu.add_command(label="Open logs", command=lambda: open_application(str(Path.cwd() / "log.log")), underline=5)
         self.help_menu.add_separator()
-        # TODO: Implement opening the README.md
-        # TODO: Bind to F1
-        # TODO: Add checkbutton on whether to convert to HTML or not
-        self.help_menu.add_command(label="Open README.md", command=lambda: self.open_markdown(Path.cwd() / "README.md"), underline=5)
+        self.help_menu.add_command(label="Open README.md",
+                                   command=self.start_open_readme_thread, underline=5,
+                                   accelerator="F1")
+        self.bind("<F1>", func=lambda _: None if self.help_menu.entrycget("Open README.md", "state") == tk.DISABLED else self.start_open_readme_thread())
+        self.convert_to_md_var = tk.BooleanVar(value=True)
+        self.disable_open_readme = False
+        self.help_menu.add_checkbutton(label="Convert Markdown to HTML", variable=self.convert_to_md_var, onvalue=True, offvalue=False)
         # TODO: Implement opening the project on GitHub
         self.help_menu.add_command(label="Open project on GitHub", state=tk.DISABLED, underline=5)
         # TODO: Implement opening an issue on GitHub
@@ -691,6 +714,8 @@ class GUI(tk.Tk):
             mbox.showerror("CircuitPython Project Manager: Error!",
                            "Your project's .cpypmconfig file cannot be accessed, closing project!"
                            "\n\n" + (traceback.format_exc() if self.show_traceback() else ""))
+        self.help_menu.entryconfigure("Open README.md", state=tk.DISABLED if self.disable_open_readme else tk.NORMAL)
+        self.help_menu.entryconfigure("Convert Markdown to HTML", state=tk.DISABLED if self.disable_open_readme else tk.NORMAL)
 
     def create_menu(self) -> None:
         """
