@@ -15,8 +15,6 @@ No functions!
 
 """
 
-# TODO: Add tooltips
-
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox as mbox
@@ -133,6 +131,16 @@ class GUI(tk.Tk):
             return bool(self.load_key("show_traceback_in_error_messages"))
         except AttributeError:
             return False
+
+    def add_tooltip(self, widget: tk.Widget, text: str) -> None:
+        """
+        Add a tooltip to a widget.
+
+        :param widget: The widget to add to.
+        :param text: The text in the tooltip.
+        :return: None.
+        """
+        tooltip.Hovertip(anchor_widget=widget, text=text)
 
     def create_config(self) -> None:
         """
@@ -283,9 +291,11 @@ class GUI(tk.Tk):
                                                           textvariable=self.project_location_var, width=51)
         self.project_location_entry.initiate_right_click_menu()
         self.project_location_entry.grid(row=0, column=1, padx=1, pady=1, sticky=tk.NW)
+        self.add_tooltip(self.project_location_entry, "Where to put the new project.")
         self.project_location_button = ttk.Button(master=self.project_location_frame, text="Browse...",
                                                   command=self.open_new_project_directory)
         self.project_location_button.grid(row=0, column=2, padx=1, pady=0, sticky=tk.NW)
+        self.add_tooltip(self.project_location_button, "Launch the directory selector.")
 
     def create_new_project_details(self) -> None:
         """
@@ -301,10 +311,12 @@ class GUI(tk.Tk):
         self.project_title_entry = EntryWithRightClick(master=self.project_details_frame, width=40, textvariable=self.project_title_var)
         self.project_title_entry.initiate_right_click_menu()
         self.project_title_entry.grid(row=0, column=1, padx=1, pady=1, sticky=tk.NW)
+        self.add_tooltip(self.project_title_entry, "The title of the project.")
         self.project_autogen_var = tk.BooleanVar(value=True)
         self.project_autogen_checkbox = ttk.Checkbutton(master=self.project_details_frame, text="Auto-generate a .gitignore",
                                                         variable=self.project_autogen_var)
         self.project_autogen_checkbox.grid(row=0, column=2, padx=1, pady=1, sticky=tk.NW)
+        self.add_tooltip(self.project_autogen_checkbox, "Whether to auto-generate a .gitignore file for the Git VCS.")
         self.project_description_label = ttk.Label(master=self.project_details_frame, text="Project description: ")
         self.project_description_label.grid(row=1, column=0, columnspan=3, padx=1, pady=1, sticky=tk.NW)
         self.project_description_text = TextWithRightClick(master=self.project_details_frame, width=60, height=10)
@@ -352,9 +364,11 @@ class GUI(tk.Tk):
         self.make_new_project_button = ttk.Button(master=self.project_buttons_frame, text="Make new project",
                                                   command=self.start_create_new_project_thread)
         self.make_new_project_button.grid(row=0, column=0, padx=1, pady=1, sticky=tk.N)
+        self.add_tooltip(self.make_new_project_button, "Make a new project.")
         self.cancel_new_project_button = ttk.Button(master=self.project_buttons_frame, text="Cancel",
                                                     command=lambda: self.dismiss_dialog(self.new_project_window))
         self.cancel_new_project_button.grid(row=0, column=1, padx=1, pady=1, sticky=tk.N)
+        self.add_tooltip(self.cancel_new_project_button, "Close this dialog without creating a new project.")
         self.update_new_project_buttons()
 
     def set_childrens_state(self, frame, enabled: bool = True) -> None:
@@ -661,6 +675,7 @@ class GUI(tk.Tk):
         self.title_entry = EntryWithRightClick(master=self.title_frame, width=29, textvariable=self.title_var)
         self.title_entry.initiate_right_click_menu()
         self.title_entry.grid(row=0, column=1, padx=1, pady=1, sticky=tk.NW)
+        self.add_tooltip(self.title_entry, "The title of the opened project.")
 
     def make_description(self, description: str) -> None:
         """
@@ -677,6 +692,8 @@ class GUI(tk.Tk):
         self.description_text.initiate_right_click_menu()
         self.description_text.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
         self.description_text.insert("1.0", description)
+        # TODO: Tooltips for text doesn't work
+        self.add_tooltip(self.description_text, "The description of the opened project.")
 
     def update_drives(self) -> None:
         """
@@ -713,12 +730,15 @@ class GUI(tk.Tk):
         self.drive_selector_combobox = ComboboxWithRightClick(master=self.drive_selector_frame, width=48, textvariable=self.drive_selector_var)
         self.drive_selector_combobox.initiate_right_click_menu()
         self.drive_selector_combobox.grid(row=0, column=1, padx=1, pady=1, sticky=tk.NW)
+        self.add_tooltip(self.drive_selector_combobox, "The CircuitPython device to sync to.")
         self.drive_selector_refresh_btn = ttk.Button(master=self.drive_selector_frame, text="↻", width=2, command=self.update_drives)
         self.drive_selector_refresh_btn.grid(row=0, column=2, padx=1, pady=0, sticky=tk.NW)
+        self.add_tooltip(self.drive_selector_refresh_btn, "Refresh the list of connected drives.")
         self.drive_selector_show_all_var = tk.BooleanVar(value=False)
         self.drive_selector_show_all_checkbtn = ttk.Checkbutton(master=self.drive_selector_frame, text="Show all drives?",
                                                                 variable=self.drive_selector_show_all_var, command=self.update_drives)
         self.drive_selector_show_all_checkbtn.grid(row=0, column=3, padx=1, pady=1, sticky=tk.NW)
+        self.add_tooltip(self.drive_selector_show_all_checkbtn, "Whether to show all drives in the list of connected drives instead of just CircuitPython drives.")
         self.update_drives()
 
     def update_listbox_context(self):
@@ -752,6 +772,7 @@ class GUI(tk.Tk):
         self.to_sync_listbox.right_click_menu.add_command(label="Add file", command=self.add_file_to_sync)
         self.to_sync_listbox.right_click_menu.add_command(label="Add directory", command=self.add_directory_to_sync)
         self.to_sync_listbox.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.add_tooltip(self.to_sync_listbox, "The files and directories to sync to the CircuitPython device.")
         self.to_sync_scrollbar = ttk.Scrollbar(master=self.to_sync_frame, command=self.to_sync_listbox.yview)
         self.to_sync_scrollbar.grid(row=1, column=1, padx=0, pady=1, sticky=tk.NSEW)
         self.to_sync_listbox.config(yscrollcommand=self.to_sync_scrollbar.set)
@@ -862,12 +883,15 @@ class GUI(tk.Tk):
         self.to_sync_add_file_btn = ttk.Button(master=self.right_frame, text="Add file", width=12,
                                                command=self.add_file_to_sync)
         self.to_sync_add_file_btn.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.add_tooltip(self.to_sync_add_file_btn, "Add a new file via the file selector.")
         self.to_sync_add_directory_btn = ttk.Button(master=self.right_frame, text="Add directory",
                                                     command=self.add_directory_to_sync)
         self.to_sync_add_directory_btn.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.add_tooltip(self.to_sync_add_directory_btn, "Add a new directory via the directory selector.")
         self.to_sync_remove_btn = ttk.Button(master=self.right_frame, text="Remove", width=12,
                                              command=self.remove_thing_to_sync)
         self.to_sync_remove_btn.grid(row=2, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.add_tooltip(self.to_sync_remove_btn, "Remove a file/directory from being synced.")
         self.update_file_sync_buttons()
 
     def save_modified(self) -> None:
@@ -975,10 +999,13 @@ class GUI(tk.Tk):
         """
         self.save_config_btn = ttk.Button(master=self.right_frame, text="Save", width=12, command=self.save_modified)
         self.save_config_btn.grid(row=4, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.add_tooltip(self.save_config_btn, "Save the .cpypmconfig file to disk.")
         self.discard_config_btn = ttk.Button(master=self.right_frame, text="Discard", width=12, command=self.discard_modified)
         self.discard_config_btn.grid(row=5, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.add_tooltip(self.discard_config_btn, "Discard changes and reload the .cpypmconfig file from disk")
         self.sync_files_btn = ttk.Button(master=self.right_frame, text="Sync", width=12, command=self.start_sync_thread)
         self.sync_files_btn.grid(row=6, column=0, padx=1, pady=1, sticky=tk.NW)
+        self.add_tooltip(self.sync_files_btn, "Sync the files to the CircuitPython drive.")
         self.check_sync_buttons()
 
     def update_main_gui(self) -> None:
