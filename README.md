@@ -26,6 +26,8 @@ GitHub-style markdown.
 1. [Installing](#installing)
    1. [Installing from source](#installing-from-source)
 2. [Running](#running)
+3. [How to use](#how-to-use)
+4. [Options](#options)
 
 ## Installing
 
@@ -153,5 +155,38 @@ cd path/to/the/CircuitPython-Project-Manager
 .venv/bin/python3 main.py
 ```
 Don't forget to give the `.sh` file execute permission! (`chmod +x shell_file.sh`)
+
+[Back to table of contents](#table-of-contents)
+
+## How to use
+
+Nothing here yet!
+
+[Back to table of contents](#table-of-contents)
+
+## Options
+
+You can find these options in `config.json`, which is in the same directory as 
+[`main.py`](https://github.com/UnsignedArduino/CircuitPython-Project-Manager/blob/main/main.py), and should be 
+auto-generated upon first run. In case it does not happen, (file a issue?) this is the default JSON file:
+```json
+{
+    "last_dir_opened": "E:\\Test",
+    "opened_recent": [
+        "E:\\Test\\Untitled\\.cpypmconfig"
+    ],
+    "show_traceback_in_error_messages": false,
+    "unix_drive_mount_point": "/media"
+}
+```
+- `last_dir_opened` should be a string of a path that points to the last directory that you opened, so the next time 
+  you open a file/directory, you will start there! It will be set once you open a directory/file, and **will not appear 
+  immediately.** 
+- `opened_recent` should be a list of strings which are the paths of projects you last opened. It will be set once you 
+  open/create a new project, and **will not appear immediately.** 
+- `show_traceback_in_error_messages` should be a boolean. (Either `true` or `false`) This will control whether stack 
+  traces will appear in error messages.
+- `unix_drive_mount_point` should be a string of a path that points to the place where your distro automatically mounts 
+  drives. Only applies to Unix-based systems.
 
 [Back to table of contents](#table-of-contents)
