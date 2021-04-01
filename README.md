@@ -160,7 +160,59 @@ Don't forget to give the `.sh` file execute permission! (`chmod +x shell_file.sh
 
 ## How to use
 
-Nothing here yet!
+### First run
+On run, you should get something like this:
+
+> If the GUI looks different from these images, it's because I don't want to update all these images. I will only 
+> update the relevant images.
+
+Figure 2.1: Start up on Windows.
+
+![A picture of the CircuitPython Project Manager on Windows](assets/2/1.png)
+
+Figure 2.2: Start up on Debian. (To be honest, Tk doesn't look that _great_ on Linux...)
+
+![A picture of the CircuitPython Project Manager on Debian](assets/2/2.png)
+
+> Note: From now on, I will be exclusively showing pictures of the CircuitPython Project Manager on Windows unless there 
+> are Linux-specific instructions. The interface is _exactly_ the same.
+
+First, let's make a project...
+
+[Back to table of contents](#table-of-contents)
+
+### Making a project
+
+First, lets go to the file menu and click `New...`. As the accelerators say (yea that's the technical term - it's 
+supposed to "accelerate" the usage of the program) you can also press <kbd>Ctrl</kbd> + <kbd>N</kbd>. 
+(<kbd>Cmd</kbd> - <kbd>N</kbd> for macOS)
+
+Figure 2.3: The file menu with `New...` command highlighted. 
+
+![A picture of the CircuitPython Project Manager's File menu open with the New.. command highlighted](assets/2/3.png)
+
+A new dialog should pop up on your screen - you won't miss it as it's bigger than the main window!
+
+Figure 2.4: The New project dialog.
+
+![A picture of the CircuitPython Project Manager's New Project dialog open](assets/2/4.png)
+
+Click the `Browse...` button to select a directory to place the project in. Or you can also type/copy and paste in the 
+location of the project.
+
+Then you may want to change the title of the project to something other than "Untitled."
+
+If you plan on using Git in the VCS, there is a checkbutton on whether you want to auto-generate a `.gitignore`. Really
+it might be better to make it mandatory because you should always use a VCS for your code. If you never heard of a VCS 
+or Git, then just uncheck this option. 
+
+If you want, type in a description for this project. It's not mandatory at all but it's nice to put TODOs in there or 
+whatever. 
+
+If it satisfies the requirements than you can press the `Make new project` button. Otherwise the status message will 
+tell you why you can't make a new project with the current settings. 
+
+Once you make a new project, it will open automatically in the main window. On to the next section!
 
 [Back to table of contents](#table-of-contents)
 
