@@ -89,3 +89,26 @@ Due to how new this project is, there are no binaries currently.
     ```commandline
     .  ..  assets  default_circuitpython_hierarchy  .git  .gitignore  gui.py  gui_tools  main.py  project_tools  README.md  requirements.txt
     ```
+
+6. If you are going to use a [virtual environment](https://docs.python.org/3/library/venv.html), run the following 
+   commands:
+    1. Windows:
+    ```commandline
+    python -m venv .venv
+    ".venv/Scripts/activate.bat"
+    ```
+    2. macOS and Linux:
+    ```commandline
+    python3 -m venv .venv
+    source .venv/bin/activate
+    ```
+
+7. Install the packages:
+    1. Windows:
+    ```commandline
+    pip install -r requirements.txt
+    ```
+    2. macOS and Linux:
+    ```commandline
+    pip3 install -r requirements.txt
+    ```
