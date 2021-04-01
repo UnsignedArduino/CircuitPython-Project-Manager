@@ -347,8 +347,12 @@ class GUI(tk.Tk):
         self.project_location_label = ttk.Label(master=self.project_location_frame, text="Project location: ")
         self.project_location_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
         self.project_location_var = tk.StringVar()
-        self.project_location_entry = EntryWithRightClick(master=self.project_location_frame,
-                                                          textvariable=self.project_location_var, width=51)
+        if os_detect.on_linux():
+            self.project_location_entry = EntryWithRightClick(master=self.project_location_frame,
+                                                              textvariable=self.project_location_var, width=32)
+        else:
+            self.project_location_entry = EntryWithRightClick(master=self.project_location_frame,
+                                                              textvariable=self.project_location_var, width=51)
         self.project_location_entry.initiate_right_click_menu()
         self.project_location_entry.grid(row=0, column=1, padx=1, pady=1, sticky=tk.NW)
         self.add_tooltip(self.project_location_entry, "Where to put the new project.")
@@ -368,7 +372,10 @@ class GUI(tk.Tk):
         self.project_title_label = ttk.Label(master=self.project_details_frame, text="Project title: ")
         self.project_title_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
         self.project_title_var = tk.StringVar(value="Untitled")
-        self.project_title_entry = EntryWithRightClick(master=self.project_details_frame, width=40, textvariable=self.project_title_var)
+        if os_detect.on_linux():
+            self.project_title_entry = EntryWithRightClick(master=self.project_details_frame, width=24, textvariable=self.project_title_var)
+        else:
+            self.project_title_entry = EntryWithRightClick(master=self.project_details_frame, width=40, textvariable=self.project_title_var)
         self.project_title_entry.initiate_right_click_menu()
         self.project_title_entry.grid(row=0, column=1, padx=1, pady=1, sticky=tk.NW)
         self.add_tooltip(self.project_title_entry, "The title of the project.")
@@ -762,7 +769,10 @@ class GUI(tk.Tk):
         self.title_label = ttk.Label(master=self.title_frame, text="Project title: ")
         self.title_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
         self.title_var = tk.StringVar(value=title)
-        self.title_entry = EntryWithRightClick(master=self.title_frame, width=29, textvariable=self.title_var)
+        if os_detect.on_linux():
+            self.title_entry = EntryWithRightClick(master=self.title_frame, width=24, textvariable=self.title_var)
+        else:
+            self.title_entry = EntryWithRightClick(master=self.title_frame, width=29, textvariable=self.title_var)
         self.title_entry.initiate_right_click_menu()
         self.title_entry.grid(row=0, column=1, padx=1, pady=1, sticky=tk.NW)
         self.add_tooltip(self.title_entry, "The title of the opened project.")
@@ -778,7 +788,10 @@ class GUI(tk.Tk):
         self.description_frame.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
         self.description_label = ttk.Label(master=self.description_frame, text="Project description: ")
         self.description_label.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
-        self.description_text = TextWithRightClick(master=self.description_frame, width=31, height=8, wrap=tk.WORD)
+        if os_detect.on_linux():
+            self.description_text = TextWithRightClick(master=self.description_frame, width=35, height=11, wrap=tk.WORD)
+        else:
+            self.description_text = TextWithRightClick(master=self.description_frame, width=31, height=8, wrap=tk.WORD)
         self.description_text.initiate_right_click_menu()
         self.description_text.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
         self.description_text.insert("1.0", description)
@@ -816,7 +829,10 @@ class GUI(tk.Tk):
         self.drive_selector_var = tk.StringVar()
         if drive is not None:
             self.drive_selector_var.set(str(drive))
-        self.drive_selector_combobox = ComboboxWithRightClick(master=self.drive_selector_frame, width=48, textvariable=self.drive_selector_var)
+        if os_detect.on_linux():
+            self.drive_selector_combobox = ComboboxWithRightClick(master=self.drive_selector_frame, width=44, textvariable=self.drive_selector_var)
+        else:
+            self.drive_selector_combobox = ComboboxWithRightClick(master=self.drive_selector_frame, width=48, textvariable=self.drive_selector_var)
         self.drive_selector_combobox.initiate_right_click_menu()
         self.drive_selector_combobox.grid(row=0, column=1, padx=1, pady=1, sticky=tk.NW)
         self.add_tooltip(self.drive_selector_combobox, "The CircuitPython device to sync to.")
@@ -853,7 +869,10 @@ class GUI(tk.Tk):
         self.to_sync_label = ttk.Label(master=self.to_sync_frame, text="Files and directories to sync: ")
         self.to_sync_label.grid(row=0, column=0, columnspan=3, padx=1, pady=1, sticky=tk.NW)
         self.to_sync_var = tk.StringVar(value=to_sync)
-        self.to_sync_listbox = ListboxWithRightClick(master=self.to_sync_frame, height=10, width=20, listvariable=self.to_sync_var)
+        if os_detect.on_linux():
+            self.to_sync_listbox = ListboxWithRightClick(master=self.to_sync_frame, height=12, width=20, listvariable=self.to_sync_var)
+        else:
+            self.to_sync_listbox = ListboxWithRightClick(master=self.to_sync_frame, height=10, width=20, listvariable=self.to_sync_var)
         self.to_sync_listbox.initiate_right_click_menu(disable=["Copy", "Cut", "Paste", "Delete", "Select all"],
                                                        callback=self.update_listbox_context)
         self.to_sync_listbox.right_click_menu.entryconfigure("Delete", command=self.remove_thing_to_sync)
@@ -973,7 +992,7 @@ class GUI(tk.Tk):
                                                command=self.add_file_to_sync)
         self.to_sync_add_file_btn.grid(row=0, column=0, padx=1, pady=1, sticky=tk.NW)
         self.add_tooltip(self.to_sync_add_file_btn, "Add a new file via the file selector.")
-        self.to_sync_add_directory_btn = ttk.Button(master=self.right_frame, text="Add directory",
+        self.to_sync_add_directory_btn = ttk.Button(master=self.right_frame, text="Add directory", width=12,
                                                     command=self.add_directory_to_sync)
         self.to_sync_add_directory_btn.grid(row=1, column=0, padx=1, pady=1, sticky=tk.NW)
         self.add_tooltip(self.to_sync_add_directory_btn, "Add a new directory via the directory selector.")
