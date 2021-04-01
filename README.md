@@ -112,3 +112,15 @@ Due to how new this project is, there are no binaries currently.
     ```commandline
     pip3 install -r requirements.txt
     ```
+
+8. You should now be able to run it!
+    1. Windows:
+    ```commandline
+    python main.py
+    ```
+    2. macOS and Linux:
+    ```commandline
+    python3 main.py
+    ```
+
+[Back to table of contents](#table-of-contents)
