@@ -311,7 +311,44 @@ Figure 2.9: Using the CircuitPython Bundle Manager to install dependencies for u
 
 ### The menu-bar in depth
 
-Nothing here just yet!
+There are lots of commands in the menu-bar. Figure 2.10 shows all of them.
+
+Figure 2.10: All commands in the menu-bar at the time of this writing when a project is opened. 
+
+![Pictures of the CircuitPython Project Manager's various menu items while a project is opened](assets/2/10.png)
+
+- `File`
+    - `New...`: Opens a dialog to create a new project. Will only be enabled if no project is opened. The keyboard 
+    shortcut is <kbd>Ctrl</kbd> + <kbd>N</kbd>. (<kbd>Cmd</kbd> + <kbd>N</kbd> for macOS users)
+    - `Open...`: Opens a file selector prompting you to select a `.cpypmconfig` file. Will only be enabled if no 
+    project is opened. The keyboard shortcut is <kbd>Ctrl</kbd> + <kbd>O</kbd>. (<kbd>Cmd</kbd> + <kbd>O</kbd> for 
+    macOS users)
+    - `Open recent`: Is a sub-menu listing the last 10 `.cpypmconfig` files you've opened. Will only be enabled if no 
+    project is opened.
+        - `Clear recent projects`: Will clear all the recent projects.
+    - `Close project`: Will close the current project. Will only be enabled if a project is opened. The keyboard 
+    shortcut is <kbd>Ctrl</kbd> + <kbd>Q</kbd>. (<kbd>Cmd</kbd> + <kbd>Q</kbd> for macOS users)
+- `Edit`: All these items will only be enabled if a project is opened.
+    - `Open .cpypmconfig`: Opens the `.cpypmconfig` file in the default `.cpypmconfig` application.
+    - `Open .cpypmconfig file location`: Opens the `.cpypmconfig` file location in the default file browser.
+    - `Open project root file location`: Opens the project root file location in the default file browser.
+    - `Copy project root file location`: Copies the project root file location to the clipboard.
+    - `Save changes`: Saves the changes you made in the GUI. The keyboard shortcut is <kbd>Ctrl</kbd> + <kbd>S</kbd>. 
+    (<kbd>Cmd</kbd> + <kbd>S</kbd> for macOS users)
+    - `Discard changes`: Discards the changes you made in the GUI. The keyboard shortcut is 
+    <kbd>Ctrl</kbd> + <kbd>D</kbd>. (<kbd>Cmd</kbd> + <kbd>D</kbd> for macOS users)
+- `Sync`: All these items will only be enabled if a project is opened.
+    - `Sync files`: Syncs the files. The keyboard shortcut is <kbd>Ctrl</kbd> + <kbd>R</kbd>. (For "run") 
+      (<kbd>Cmd</kbd> + <kbd>R</kbd> for macOS users)
+- `Help`
+    - `Open configuration`: Opens the configuration file in the default `.json` application.
+    - `Open logs`: Opens the logs in the default `.log` application.
+    - `Open README.md`: Opens the README.md file. The keyboard shortcut is <kbd>F1</kbd>
+    - `Convert Markdown to HTML`: A checkbutton on whether to convert the markdown to HTML before opening it for you. 
+    If it is checked, the README will be opened in the default `.html` application, otherwise it will open in the 
+    default `.md` application.
+    - `Open project on GitHub`: Opens the project on GitHub in the default browser.
+    - `Open issue on GitHub`: Opens the new issue panel on GitHub in the default browser. 
 
 [Back to table of contents](#table-of-contents)
 
