@@ -294,7 +294,18 @@ Next we'll ~~do some shameless self promotion~~ and figure out how to manage dep
 
 ### Managing dependencies
 
-Nothing here just yet!
+**This chapter is basically self promotion for my other project the 
+[CircuitPython Bundle Manager](https://github.com/UnsignedArduino/CircuitPython-Bundle-Manager).**
+
+Using the CircuitPython Bundle Manager we can manage our dependencies for our project! You can find installation 
+instructions [here](https://github.com/UnsignedArduino/CircuitPython-Bundle-Manager#installing). 
+
+In the edit menu, we can copy the root of the project via the `Copy project root file location` and paste that into the 
+drive portion of the CircuitPython Bundle Manager, like in figure 2.9.
+
+Figure 2.9: Using the CircuitPython Bundle Manager to install dependencies for us. 
+
+![A picture of the **CircuitPython Bundle Manager** hovering over the `neopixel.mpy` file with the project root location in the drive area](assets/2/9.png)
 
 [Back to table of contents](#table-of-contents)
 
