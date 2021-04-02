@@ -18,9 +18,7 @@ GitHub-style markdown.
 > - [CircuitPython-Bundle-Manager](https://github.com/UnsignedArduino/CircuitPython-Bundle-Manager): A Python program 
     that makes it easy to manage modules on a CircuitPython device!
 
-> Note: As you can tell, the documentation is _definitely_ not finished. While I'm writing this documentation, you 
-> can either wait for me to finish (not recommended) or ping me on Discord on the Discord server linked above. 
-> (recommended)
+> Note: **This project is still in beta!!!**
 
 ## Table of Contents
 1. [Installing](#installing)
