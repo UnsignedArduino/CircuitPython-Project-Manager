@@ -204,7 +204,7 @@ location of the project.
 
 Then you may want to change the title of the project to something other than "Untitled."
 
-If you plan on using Git in the VCS, there is a checkbutton on whether you want to auto-generate a `.gitignore`. Really
+If you plan on using Git as a VCS, there is a checkbutton on whether you want to auto-generate a `.gitignore`. Really
 it might be better to make it mandatory because you should always use a VCS for your code. If you never heard of a VCS 
 or Git, then just uncheck this option. 
 
