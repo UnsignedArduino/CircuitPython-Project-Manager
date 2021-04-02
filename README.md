@@ -223,7 +223,72 @@ Once you make a new project, it will open automatically in the main window. On t
 
 ### Managing projects
 
-Nothing here just yet!
+After opening a project (or creating it) you will be presented with a fairly large window as my applications go at the 
+time of this writing with tons of buttons which is always fun.
+
+Figure 2.5: A standard project after creation.
+
+![A picture of the CircuitPython Project Manager with a freshly-created project opened](assets/2/5.png)
+
+Let's outline them in colorful boxes, and I'll tell you what each one does!
+
+Figure 2.6: A standard project after creation but with colorful boxes around all the UI elements.
+
+![A picture of the CircuitPython Project Manager with a freshly-created project opened with the main UI elements boxed in colorful rectangles](assets/2/6.png)
+
+1. In purple, this is where you can modify the project title.
+2. In dark-blue, this is where you can modify the project description.
+3. In blue, this is a list of the files and **whole** directories that will be synced.
+4. In green, this is how you can include and exclude files and directories you want to sync.
+5. In yellow, this is where you can save and discard all your changes after changing some stuff around. Pressing the 
+   `Sync` button will also sync the listed files and directories to the drive listed as the target.
+6. In orange, this is the location of the drive. You may recognize this from my previous project the 
+   [CircuitPython Bundle Manager](https://github.com/UnsignedArduino/CircuitPython-Bundle-Manager) (Oh no more shameless
+   self promotion) and yes I totally did not copy and paste the code from it. I would never do such a thing. It's the 
+   same interface too because ~~I'm all about consistency.~~ But if you don't know, it's a combo box which will list 
+   all the connected CircuitPython devices, unless the `Show all drives` checkbutton is, checked. And the refresh button
+   will refresh the list of connected drives. 
+7. In red, this is the menu bar. We will go more in depth and description and explain all the magic that happens in 
+   [The menu-bar in depth](#the-menu-bar-in-depth) section coming up.
+
+If you want to add a file to be synced, say if you were making a lightsaber with sound effects, you may want to sync an 
+`.mp3` file with lightsaber noises. To do that, just copy the `.mp3` file into the project directory. (Which you can 
+open by clicking on the `Edit` menu casacade and pressing `Open .cpypmconfig file location` because by default, the 
+`.cpypmconfig` file defaults to being in the root of your project, unless you moved it. Why would you move it???) Next 
+press the `Add file` button and a file selector pops up. Select the `.mp3` file and if all goes to plan, it should 
+appear in your list of files and directories to sync!
+
+If you want to add a whole directory to be synced, like if you were making a slide show, then copy the directory full 
+of pictures into the project and press `Add directory` and select that directory to sync. If all goes well, it should 
+appear in the list of files and directories to sync!
+
+Now if you want to sync your stuff, you must first select a CircuitPython drive. Click on the drop-down icon and select 
+a drive. If you can't find it, than you may benefit from selecting `Show all drives?` and checking again. If that still 
+doesn't work (file an issue?) then you can enter the path of the device manually too. 
+
+If you are on Linux, depending on where your distribution mounts drives, you may not find any unless you edit the 
+application's configuration file. To do so, press on the `Help` casacade and select the `Open configuration` command. 
+This will open the configuration file in the default `.json` application. 
+
+Figure 2.7: My configuration file before editing.
+
+![A picture of the configuration file opened in Mousepad on the Raspberry Pi OS (hey it was the only Linux distro I have available right now)](assets/2/7.png)
+
+Now if your distro mounts drives in say, `/media/pi`, then edit the `unix_drive_mount_point` attribute and save.
+
+Figure 2.8: My configuration file after editing.
+
+![A picture of the configuration file after being edited](assets/2/8.png)
+
+Now after editing you may be wondering _why isn't it working??? It won't let me press the button!!! Your software is 
+broken and I'm never gonna use it ever again!!!_ You'll need to press the `Save` button and if all things go right, 
+everything should go grey for a second and back to normal. You should be able to sync! 
+
+To sync, press the `Sync` button. (wow I would have never thought that) A teensy tiny dialog will pop up saying 
+"Syncing..." and once the sync is done it will disappear. That's it! You can also press <kbd>Ctrl</kbd> + <kbd>R</kbd> 
+(<kbd>Cmd</kbd> + <kbd>R</kbd> for the folks in macOS land) to sync too or use the sync command in the `Sync` casacade. 
+
+Next we'll ~~do some shameless self promotion~~ and figure out how to manage dependencies.
 
 [Back to table of contents](#table-of-contents)
 
