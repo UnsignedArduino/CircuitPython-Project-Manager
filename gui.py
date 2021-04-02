@@ -143,6 +143,18 @@ class GUI(tk.Tk):
         :return: None.
         """
         tooltip.Hovertip(anchor_widget=widget, text=text)
+
+    def copy_to_clipboard(self, string: str = "") -> None:
+        """
+        Copy something to the clipboard.
+
+        :param string: What to copy to the clipboard.
+        :return: None.
+        """
+        logger.debug(f"Copying {repr(string)} to clipboard!")
+        self.clipboard_clear()
+        self.clipboard_append(string)
+        self.update()
     
     def open_file(self, path: Union[Path, str], download_url: str = None) -> None:
         """
@@ -622,6 +634,11 @@ class GUI(tk.Tk):
         self.edit_menu.add_command(label="Open .cpypmconfig file location",
                                    command=lambda: self.open_file(str(self.cpypmconfig_path.parent)), underline=23)
         self.edit_menu.add_separator()
+        self.edit_menu.add_command(label="Open project root file location",
+                                   command=lambda: self.open_file(self.cpypmconfig["project_root"]), underline=13)
+        self.edit_menu.add_command(label="Copy project root file location",
+                                   command=lambda: self.copy_to_clipboard(self.cpypmconfig["project_root"]))
+        self.edit_menu.add_separator()
         self.edit_menu.add_command(label="Save changes", command=self.save_modified, underline=0,
                                    accelerator=self.make_key_bind(ctrl_cmd=True, mac_ctrl=False, shift=False,
                                                                   alt_option=False, letter="s",
@@ -708,6 +725,10 @@ class GUI(tk.Tk):
         self.edit_menu.entryconfigure("Open .cpypmconfig",
                                       state=tk.DISABLED if self.cpypmconfig_path is None else tk.NORMAL)
         self.edit_menu.entryconfigure("Open .cpypmconfig file location",
+                                      state=tk.DISABLED if self.cpypmconfig_path is None else tk.NORMAL)
+        self.edit_menu.entryconfigure("Open project root file location",
+                                      state=tk.DISABLED if self.cpypmconfig_path is None else tk.NORMAL)
+        self.edit_menu.entryconfigure("Copy project root file location",
                                       state=tk.DISABLED if self.cpypmconfig_path is None else tk.NORMAL)
         self.edit_menu.entryconfigure("Save changes",
                                       state=tk.DISABLED if self.cpypmconfig_path is None else tk.NORMAL)
