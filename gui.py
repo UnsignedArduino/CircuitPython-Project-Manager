@@ -386,7 +386,7 @@ class GUI(tk.Tk):
         self.add_tooltip(self.project_autogen_checkbox, "Whether to auto-generate a .gitignore file for the Git VCS.")
         self.project_description_label = ttk.Label(master=self.project_details_frame, text="Project description: ")
         self.project_description_label.grid(row=1, column=0, columnspan=3, padx=1, pady=1, sticky=tk.NW)
-        self.project_description_text = TextWithRightClick(master=self.project_details_frame, width=60, height=10)
+        self.project_description_text = TextWithRightClick(master=self.project_details_frame, width=60, height=10, wrap=tk.WORD)
         self.project_description_text.initiate_right_click_menu()
         self.project_description_text.grid(row=2, column=0, columnspan=3, padx=1, pady=1, sticky=tk.NW)
         self.project_status = ttk.Label(master=self.project_details_frame)
