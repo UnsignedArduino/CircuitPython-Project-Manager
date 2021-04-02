@@ -26,6 +26,8 @@ GitHub-style markdown.
 1. [Installing](#installing)
    1. [Installing from source](#installing-from-source)
 2. [Running](#running)
+   1. [First run](#first-run)
+   2. [Making a new project](#making-a-project)
 3. [How to use](#how-to-use)
 4. [Options](#options)
 
