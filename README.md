@@ -26,9 +26,12 @@ GitHub-style markdown.
 1. [Installing](#installing)
    1. [Installing from source](#installing-from-source)
 2. [Running](#running)
+3. [How to use](#how-to-use)
    1. [First run](#first-run)
    2. [Making a new project](#making-a-project)
-3. [How to use](#how-to-use)
+   3. [Managing projects](#managing-projects)
+   4. [Managing dependencies](#managing-dependencies)
+   5. [The menu-bar in depth](#the-menu-bar-in-depth)
 4. [Options](#options)
 
 ## Installing
@@ -215,6 +218,24 @@ If it satisfies the requirements than you can press the `Make new project` butto
 tell you why you can't make a new project with the current settings. 
 
 Once you make a new project, it will open automatically in the main window. On to the next section!
+
+[Back to table of contents](#table-of-contents)
+
+### Managing projects
+
+Nothing here just yet!
+
+[Back to table of contents](#table-of-contents)
+
+### Managing dependencies
+
+Nothing here just yet!
+
+[Back to table of contents](#table-of-contents)
+
+### The menu-bar in depth
+
+Nothing here just yet!
 
 [Back to table of contents](#table-of-contents)
 
